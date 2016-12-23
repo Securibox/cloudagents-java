@@ -17,7 +17,7 @@ import core.exceptions.ResponseException;
 import core.impl.SSLConfiguration;
 import java.util.List;
 
-public class AgentsTests {
+public class AgentsBasicAuth {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -53,7 +53,7 @@ import core.exceptions.ResponseException;
 import core.impl.HttpTrustStore;
 import core.impl.SSLConfiguration;
 
-public class AgentsTestsCertAuth {
+public class AgentsCertAuth {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
