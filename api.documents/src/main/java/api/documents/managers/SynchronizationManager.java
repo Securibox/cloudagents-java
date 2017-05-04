@@ -64,5 +64,5 @@ public interface SynchronizationManager {
 	 * @throws ClientException the client exception
 	 * @throws ResponseException the response exception
 	 */
-	public void acknowledgeSynchronizationDelivery(String customerAccountId, int[] documentIds, int[] missingDocumentIds) throws ClientException, ResponseException;
+	public void acknowledgeSynchronizationDelivery(String customerAccountId, long[] documentIds, long[] missingDocumentIds) throws ClientException, ResponseException;
 }

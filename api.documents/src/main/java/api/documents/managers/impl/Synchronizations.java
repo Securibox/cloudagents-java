@@ -68,8 +68,8 @@ public class Synchronizations implements SynchronizationManager {
 		});
 	}
 
-	public void acknowledgeSynchronizationDelivery(String customerAccountId, int[] documentIds,
-			int[] missingDocumentIds) throws ClientException, ResponseException {
+	public void acknowledgeSynchronizationDelivery(String customerAccountId, long[] documentIds,
+			long[] missingDocumentIds) throws ClientException, ResponseException {
 		
 		Client c = ApiClient.getClient();
 		
@@ -100,11 +100,11 @@ public class Synchronizations implements SynchronizationManager {
 		@SuppressWarnings("unused")
 		private String customerAccountId;
 		@SuppressWarnings("unused")
-		private int[] documentIds;
+		private long[] documentIds;
 		@SuppressWarnings("unused")
-		private int[] missingDocumentIds;
+		private long[] missingDocumentIds;
 
-		SynchronizationAcknowledgement(String customerAccountId, int[] documentIds, int[] missingDocumentIds) {
+		SynchronizationAcknowledgement(String customerAccountId, long[] documentIds, long[] missingDocumentIds) {
 			this.customerAccountId = customerAccountId;
 			this.documentIds = documentIds;
 			this.missingDocumentIds = missingDocumentIds;
