@@ -46,21 +46,21 @@ public class Documents implements DocumentManager {
 		return c.deserialize(r.getBody(), new TypeReference<List<Document>>(){});
 	}
 
-	public Document getDocument(int id, boolean includeContent) throws ClientException, ResponseException {
+	public Document getDocument(long id, boolean includeContent) throws ClientException, ResponseException {
 		Client c = ApiClient.getClient();
 		
 		UriParameters pars = new UriParameters();
 		pars.put("includeContent", includeContent);
 		
-		Response r = c.get(path + Integer.toString(id)  + "?" + pars.getParameterString());
+		Response r = c.get(path + Long.toString(id)  + "?" + pars.getParameterString());
 		return c.deserialize(r.getBody(), new TypeReference<Document>(){});
 	}
 
-	public void acknowledgeDocumentDelivery(int id) throws ClientException, ResponseException {
+	public void acknowledgeDocumentDelivery(long id) throws ClientException, ResponseException {
 		Client c = ApiClient.getClient();
 		
 		String payload = c.serialize(id);
-		c.put(path + Integer.toString(id)  + "/ack?", payload );
+		c.put(path + Long.toString(id)  + "/ack?", payload );
 	}
 
 }

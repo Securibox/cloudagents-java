@@ -31,7 +31,7 @@ import core.impl.DateDeserializer;
 public class Document {
 	
 	/** The id. */
-	private int id;
+	private long id;
 	
 	/** The name. */
 	private String name;
@@ -83,7 +83,7 @@ public class Document {
 	 *
 	 * @return the id
 	 */
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 
@@ -92,7 +92,7 @@ public class Document {
 	 *
 	 * @param id the new id
 	 */
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 

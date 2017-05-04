@@ -51,7 +51,7 @@ public interface DocumentManager {
 	 * @throws ClientException the client exception
 	 * @throws ResponseException the response exception
 	 */
-	public Document getDocument(int id, boolean includeContent) throws ClientException, ResponseException;	
+	public Document getDocument(long id, boolean includeContent) throws ClientException, ResponseException;	
 	
 	/**
 	 * Acknowledge document delivery.
@@ -60,5 +60,5 @@ public interface DocumentManager {
 	 * @throws ClientException the client exception
 	 * @throws ResponseException the response exception
 	 */
-	public void acknowledgeDocumentDelivery(int id) throws ClientException, ResponseException;
+	public void acknowledgeDocumentDelivery(long id) throws ClientException, ResponseException;
 }
