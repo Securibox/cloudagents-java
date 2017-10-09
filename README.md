@@ -1,5 +1,5 @@
-# SCA documents api for java
-
+# cloudagents-java
+A Java client library for the Securibox Cloud Agents API
 
 ## Basic Authentication 
 
@@ -67,3 +67,10 @@ public class AgentsCertAuth {
 	}
 }
 ```
+
+## Bank agents
+The following is the minimum needed code to list all agent details and fields:
+
+```java
+
+
