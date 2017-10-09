@@ -1,6 +1,6 @@
 package eu.securibox.cloudagents.api.banks;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -18,12 +18,17 @@ import eu.securibox.cloudagents.core.configuration.SSLConfiguration;
 import eu.securibox.cloudagents.core.exceptions.ClientException;
 import eu.securibox.cloudagents.core.exceptions.ResponseException;
 
-public class CertificateAuthTest {
+public class JwtAuthTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		SecurityConfiguration systConfig = SSLConfiguration.ClientCertificate(null, "src/resources/{certificate-name}.p12", "{certificate-password}", "{certificate-private-key-password}");
-		ApiClient.ConfigureClient("https://sca-{clientName}.securibox.eu/api/bankv1",systConfig);
+		SecurityConfiguration securityConfiguration = SSLConfiguration.JWT(
+				null, 
+				"publicKey.pem", 
+				"privateKey.pk8", 
+				"password");
+		
+		ApiClient.ConfigureClient("https://sca-{clientName}.securibox.eu/api/bankv1", securityConfiguration);
 	}
 
 
@@ -91,5 +96,4 @@ public class CertificateAuthTest {
 	public void deleteAccount()  throws ClientException, ResponseException{
 		ApiClient.getAccountManager().deleteAccount("d5df848e31894ce98c06a3aaef91877a");
 	}	
-
 }
