@@ -17,13 +17,13 @@ public class Card {
 	/** The brand. */
 	private String brand;
 
-	/** The bank account number. */
+	/** The card number. */
 	private String number;
 
-	/** The bank account name. */
+	/** The card name. */
 	private String name;
 
-	/** The bank account currency. */
+	/** The card transactions currency. */
 	private String currency;
 
 	/** Date specifying the date from which data has been downloaded. */
@@ -32,7 +32,7 @@ public class Card {
 	/** The previous balances. */
 	private List<Balance> Balances;
 
-	/** The bank account transactions. */
+	/** The card transactions. */
 	private List<Transaction> transactions;
 
 	/** The state. */

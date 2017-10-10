@@ -7,26 +7,26 @@ import java.util.Date;
  */
 public class Transaction {
 
-	/** The transaction date. */
-	private Date transactionDate;
+	/** The amount. */
+	private float amount;
+	
+	/** The currency. */
+	private String currency;	
 
-	/** The value date. */
-	private Date valueDate;
+	/** The intraday. */
+	private boolean intradays;
 
 	/** The label. */
 	private String label;
-
-	/** The amount. */
-	private float amount;
-
-	/** The currency. */
-	private String currency;
+	
+	/** The transaction date. */
+	private Date transactionDate;
 
 	/** The type. */
-	private TransactionType type;
+	private TransactionType type;	
 	
-	/** The intraday. */
-	private boolean intradays;
+	/** The value date. */
+	private Date valueDate;
 
 	/**
 	 * Sets the transaction date.
