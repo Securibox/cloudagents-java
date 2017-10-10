@@ -18,6 +18,9 @@ package eu.securibox.cloudagents.api.banks.beans;
 
 public class Credential {
 	public Credential(){}
+	
+	private String alg;
+	
 	/** The position. */
 	private int position;
 	
@@ -33,6 +36,7 @@ public class Credential {
 	public Credential(int position, String value){
 		this.position = position;
 		this.value = value;
+		this.alg = "none";
 	}
 	
 	/**
@@ -54,6 +58,15 @@ public class Credential {
 	}
 	
 	/**
+	 * Gets the encryption algorithm.
+	 *
+	 * @return the encryption algorithm.
+	 */
+	public String getAlg(){
+		return this.alg;
+	}	
+	
+	/**
 	 * Sets the position.
 	 *
 	 * @param position the new position
@@ -70,4 +83,16 @@ public class Credential {
 	public void setValue(String value){
 		this.value = value;
 	}
+	
+	/**
+	 * Sets the encryption algorithm.
+	 *
+	 * @param value the encryption algorithm.
+	 */
+	public void setAlg(String alg){
+		if(alg != "none" && alg != "rsa"){
+			throw new IllegalArgumentException("The only accepted algorithm values are 'none' or 'rsa'.");
+		}
+		this.alg = alg;
+	}	
 }

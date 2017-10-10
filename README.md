@@ -1,76 +1,102 @@
 # cloudagents-java
 A Java client library for the Securibox Cloud Agents API
 
-## Basic Authentication 
+## Authentication
+In order to secure the Securibox Cloud Agents API, three mechanisms have been implemented.
+Here is a brief overview of the three mechanisms as well as code snippets to help you integrate the correct mechanism in order to call the APIs.
 
-Sample Code:
+### Basic API Authentication w/ TLS
+Basic API authentication is the easiest of the three to implement offering the lowest security options of the common protocols.
+This mechanism is usually advised for testing purposes in order to test the APIs and only requires Securibox to provide a username and password.
 
 ```java
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import api.documents.beans.Agent;
-import api.documents.managers.impl.ApiClient;
-import core.SecurityConfiguration;
-import core.exceptions.ClientException;
-import core.exceptions.ResponseException;
-import core.impl.SSLConfiguration;
-import java.util.List;
-
-public class AgentsBasicAuth {
-
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		SecurityConfiguration systConfig = SSLConfiguration.Basic(null, "userName", "password");
-		ApiClient.ConfigureClient("https://sca-{clientName}.securibox.eu/api/v1",systConfig);
-	}
-	@Test
-	public void listAgentsTest() throws ClientException, ResponseException {
-		List<Agent> agents = ApiClient.getAgentManager().listAgents("fr-FR");
-		System.out.println(agents.get(0).getName());
-	}
-}
-    
+SecurityConfiguration systConfig = SSLConfiguration.Basic(null, "userName", "password");
+ApiClient.ConfigureClient("https://sca-{clientName}.securibox.eu/api/v1",systConfig);
 ```
 
-## Certificate Authentication 
 
-Sample Code:
+### SSL Client Certificate Authentication 
+The SSL client certification is a mechanism allowing your application to authenticate itself with the Securibox Cloud Agents (SCA) servers. In this case, your application will send its SSL certificate after verifing the SCA server identity. Then, the client and server use both certificates to generate a unique key used to sign requests sent between them.
 
+This kind of authentication is implemented when the customer call your servers that will then call the Securibox Cloud Agents API.
+
+In order to use this type of authentication, Securibox will provide a PKCS#12 file (.p12 or .pfx) containing a password protected private key and a X.509 certificate.
 
 ```java
-import java.util.List;
+SecurityConfiguration systConfig = SSLConfiguration.ClientCertificate(null, "src/resources/{certificate-name}.p12", "{certificate-password}", "{certificate-private-key-password}");
+ApiClient.ConfigureClient("https://sca-{clientName}.securibox.eu/api/v1",systConfig);
+```
+### JSON Web Token Authentication
+[JSON Web Token (JWT)](https://jwt.io) is an open standard (RFC 7519) that defines a compact and self-contained way for securely transmitting information between parties as a JSON object. This information can be verified and trusted because it is digitally signed. JWTs can be signed using a public/private key pair using RS256 (RSA PKCS#1 signature with SHA-256).
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+This kind of authentication is implemented when the customer call directly the Securibox Cloud Agents API together with [cross-origin resource sharing (CORS)](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing).
 
-import api.documents.beans.Agent;
-import api.documents.managers.impl.ApiClient;
-import core.SecurityConfiguration;
-import core.TrustStore;
-import core.exceptions.ClientException;
-import core.exceptions.ResponseException;
-import core.impl.HttpTrustStore;
-import core.impl.SSLConfiguration;
+In order to use this type of authentication, Securibox will provide a PKCS#8 public and password protected private key in PEM file (.pem).
+```java
+SecurityConfiguration securityConfiguration = SSLConfiguration.JWT(null, "publicKey.pem","privateKey.pem",  "PrivateKeyPassword");
+ApiClient.ConfigureClient("https://sca-{clientName}.securibox.eu/api/bankv1", securityConfiguration);
+```
+## Basic Usage
+### Bank aggregation
+The following is the minimum needed code to be able to use the bank aggregation API.
+```java
+//Setting up the client with basic authentication
+SecurityConfiguration systConfig = SSLConfiguration.Basic(null, "basic_username", "basic_password");
+ApiClient.ConfigureClient("https://sca-multitenant.securibox.eu/api/bankv1/", systConfig);
 
-public class AgentsCertAuth {
+//Listing banks
+List<Bank> banks = ApiClient.getBankManager().ListBanks();
 
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		SecurityConfiguration systConfig = SSLConfiguration.ClientCertificate(null, "src/resources/{certificate-name}.p12", "{certificate-password}", "{certificate-private-key-password}");
-		ApiClient.ConfigureClient("https://sca-{clientName}.securibox.eu/api/v1",systConfig);
-	}
-	@Test
-	public void listAgentsTest() throws ClientException, ResponseException {
-		List<Agent> agents = ApiClient.getAgentManager().listAgents("fr-FR");
-		System.out.println(agents.get(0).getName());
-	}
+//Creating an account
+Account account = new Account(); 
+account.setBankId("381c9ea540c14519b88ee345bb691a14"); //BforBank identifier
+account.setCustomerUserId("User_Id_109");
+account.setCustomerAccountId("d5df848e31894ce98c06a3aaef91877a");
+account.setMode(AccountMode.Enabled);
+account.setName("BforBank Test name");
+Credential userName = new Credential(0, "Credential 1");
+Credential birthName = new Credential(1, "Credential 2");
+Credential password = new Credential(2, "Credential 3");
+account.getCredentials().add(userName);
+account.getCredentials().add(birthName);
+account.getCredentials().add(password);
+Account returnedAccount = ApiClient.getAccountManager().createAccount(account, false);
+
+//Synchronizing an account
+Synchronization synch = ApiClient.getAccountManager().synchronizeAccount("d5df848e31894ce98c06a3aaef91877a", false);
+
+//Polling the synchronization status to see when the synchronization is completed
+Account account = ApiClient.getAccountManager().getAccount("d5df848e31894ce98c06a3aaef91877a");
+String lastSynchState = account.getLastSynchronizationState();
+while(lastSynchState.compareTo("Completed") != 0){
+	Thread.sleep(5000);
+    account = ApiClient.getAccountManager().getAccount("d5df848e31894ce98c06a3aaef91877a");
 }
+
+//Getting all the bank accounts for this account
+List<BankAccount> bankAccounts = ApiClient.getBankAccountManager().ListBankAccountsByAccount("d5df848e31894ce98c06a3aaef91877a");
+
+//Update an account
+Account account = ApiClient.getAccountManager().getAccount("d5df848e31894ce98c06a3aaef91877a");
+account.setName("New Name");
+Account returnedAccount = ApiClient.getAccountManager().updateAccount(account);
+
+//Delete an account
+ApiClient.getAccountManager().deleteAccount("d5df848e31894ce98c06a3aaef91877a");
 ```
 
-## Bank agents
-The following is the minimum needed code to list all agent details and fields:
+## Webhooks
+The result of each synchronization is posted in a webhook that needs to be setup in the API client application.
+Once a synchronization is done, an HTTP POST request will be made to the wehbhook endpoint to send the result.
+If an authentication is required, Securibox Cloud Agents is able to authenticate itself through basic authentication, SSL client certificate and JWT.
 
+Some examples of the JSON objects sent to the webhooks can be seen the [src\test\resources folder](https://github.com/Securibox/cloudagents-java/tree/master/src/test/resources).
+
+The following code deserializes the JSON synchronization object:
 ```java
+import com.fasterxml.jackson.databind.ObjectMapper;
+import eu.securibox.cloudagents.api.banks.beans.Synchronization;
 
-
+ObjectMapper mapper = new ObjectMapper();
+Synchronization synchronization = mapper.readValue(jsonSynchResult, Synchronization.class);
+```

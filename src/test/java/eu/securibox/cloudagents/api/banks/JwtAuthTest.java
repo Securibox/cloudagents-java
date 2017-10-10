@@ -27,7 +27,6 @@ public class JwtAuthTest {
 				"publicKey.pem", 
 				"privateKey.pk8", 
 				"password");
-		
 		ApiClient.ConfigureClient("https://sca-{clientName}.securibox.eu/api/bankv1", securityConfiguration);
 	}
 
