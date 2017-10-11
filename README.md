@@ -29,7 +29,7 @@ ApiClient.ConfigureClient("https://sca-{clientName}.securibox.eu/api/v1",systCon
 ### JSON Web Token Authentication
 [JSON Web Token (JWT)](https://jwt.io) is an open standard (RFC 7519) that defines a compact and self-contained way for securely transmitting information between parties as a JSON object. This information can be verified and trusted because it is digitally signed. JWTs can be signed using a public/private key pair using RS256 (RSA PKCS#1 signature with SHA-256).
 
-This kind of authentication is implemented when the customer call directly the Securibox Cloud Agents API together with [cross-origin resource sharing (CORS)](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing).
+This kind of authentication is implemented when the customer calls directly the Securibox Cloud Agents API together with [cross-origin resource sharing (CORS)](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing).
 
 In order to use this type of authentication, Securibox will provide a PKCS#8 public and password protected private key in PEM file (.pem).
 ```java

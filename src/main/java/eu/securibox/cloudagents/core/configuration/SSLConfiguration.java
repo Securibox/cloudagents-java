@@ -258,7 +258,7 @@ public class SSLConfiguration implements SecurityConfiguration {
 			Calendar calendar = Calendar.getInstance();
 			long t= calendar.getTimeInMillis();
 			Date date = new Date(t);
-			Date expiresAt = new Date(t + (60 * 6000));
+			Date expiresAt = new Date(t + (60 * 60* 1000));
 			
 			Algorithm JwtAlgorithm = Algorithm.RSA256(publicKey, privateKey);
 			String token = JWTCreator.init()
