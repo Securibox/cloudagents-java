@@ -8,7 +8,6 @@ import java.util.Map;
 import org.apache.commons.codec.binary.Base64;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
@@ -31,7 +30,6 @@ public class JWTCreator {
             SimpleModule module = new SimpleModule();
             module.addSerializer(ClaimsHolder.class, new PayloadSerializer());
             mapper.registerModule(module);
-            mapper.configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true);
             headerJson = mapper.writeValueAsString(headerClaims);
             payloadJson = mapper.writeValueAsString(new ClaimsHolder(payloadClaims));
         } catch (JsonProcessingException e) {

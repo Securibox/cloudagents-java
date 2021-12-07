@@ -1,6 +1,7 @@
 package eu.securibox.cloudagents.core.types;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.RuntimeJsonMappingException;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -297,7 +298,7 @@ public enum CountryCode {
 	 * @return the agent country code
 	 * @throws JsonMappingException the json mapping exception
 	 */
-	public static CountryCode deserialize(String text) throws JsonMappingException {
+	public static CountryCode deserialize(String text) throws RuntimeJsonMappingException {
 		try {
 			int code = Integer.parseInt(text);
 			for (CountryCode countryCode : CountryCode.values()) {
@@ -306,6 +307,6 @@ public enum CountryCode {
 			}
 		} catch (Exception e) {
 		}
-		throw new JsonMappingException("Cannot deserialize " + text + " into a known CountryCode");
+		throw new RuntimeJsonMappingException("Cannot deserialize " + text + " into a known CountryCode");
 	}	
 }

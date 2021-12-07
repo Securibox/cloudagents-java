@@ -35,8 +35,7 @@ public class ApiClient {
 	 * @param configuration the configuration
 	 */
 	public static void ConfigureClient(SecurityConfiguration configuration) {
-		
-		ApiClient.client = new HttpClient(null, configuration);
+		ApiClient.ConfigureClient(null, configuration);
 	}
 	
 	/**

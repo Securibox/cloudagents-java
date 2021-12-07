@@ -21,7 +21,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 
@@ -38,7 +38,7 @@ public class HttpClient implements Client {
 
 	protected Executor executor;
 	protected String baseUrl;
-	protected ObjectMapper mapper;
+	protected JsonMapper mapper;
 	
 	public static Client FromConfigFile(String configurationFile) throws SecurityConfigurationException{
 		if(Utils.nullOrEmpty(configurationFile))
@@ -92,9 +92,13 @@ public class HttpClient implements Client {
 		}
 		
 		// Instancing the JSON mapper (jackson library)
-		this.mapper = new ObjectMapper();
+		JsonMapper.Builder builder = JsonMapper.builder();
+		builder.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+		this.mapper =  builder.build();
+				
 		
-		this.mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true); 
+
+		//this.mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true); 
         // Avoid having to annotate the Person class
         // Requires Java 8, pass -parameters to javac
         // and jackson-module-parameter-names as a dependency
@@ -192,7 +196,6 @@ public class HttpClient implements Client {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	public <T> T deserialize(String s,TypeReference<T> type) throws ClientException {
 		try {			
 			T out = (T) this.mapper.readValue(s, type);

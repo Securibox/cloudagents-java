@@ -3,7 +3,6 @@ package eu.securibox.cloudagents.core.auth.jwt.algorithms;
 import org.apache.commons.codec.binary.Base64;
 
 import eu.securibox.cloudagents.core.auth.jwt.DecodedJWT;
-import eu.securibox.cloudagents.core.auth.jwt.algorithms.Algorithm;
 import eu.securibox.cloudagents.core.auth.jwt.exceptions.SignatureGenerationException;
 import eu.securibox.cloudagents.core.auth.jwt.exceptions.SignatureVerificationException;
 
