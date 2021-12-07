@@ -1,22 +1,11 @@
   /**
-   * Copyright (C) 2016 Securibox
+   * Copyright (C) 2021 Securibox
    * 
-   * This program is free software: you can redistribute it and/or modify 
-   * it under the terms of the GNU General Public License as published by 
-   * the Free Software Foundation, either version 3 of the License, or 
-   * (at your option) any later version.
-   * 
-   * This program is distributed in the hope that it will be useful, 
-   * but WITHOUT ANY WARRANTY; without even the implied warranty of 
-   * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
-   * GNU General Public License for more details.
-   * 
-   * You should have received a copy of the GNU General Public License 
-   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
    */
 
 package eu.securibox.cloudagents.api.documents;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.List;
 
@@ -31,11 +20,25 @@ import eu.securibox.cloudagents.core.http.UriParameters;
 import eu.securibox.cloudagents.core.Utils;
 
 
-
+/**
+ * Wrapper for the Synchronizations related methods.
+ *
+ */
 public class Synchronizations {
 
 	private static String path = "synchronizations/";
 
+	/**
+	 * Launches a new synchronizations to download documents.
+	 * @param customerAccountId The customer account identifier
+	 * @param customerUserId The customer user identifier
+	 * @param isForced If true, sets the synchronization as forced, thus overriding the document unicity check.
+	 * @return A list of synchronisations with a single item
+    * @throws ClientException
+    * 			A client exception
+    * @throws ResponseException
+    * 			A response exception
+	 */
 	public List<Synchronization> createSynchronizations(String customerAccountId, String customerUserId,
 			boolean isForced) throws ClientException, ResponseException {
 
@@ -50,8 +53,22 @@ public class Synchronizations {
 		});
 	}
 
+	/**
+	 * Searches synchronisations by multiple parameters
+	 * @param customerAccountId The customer account identifier
+	 * @param customerUserId The customer user identifier
+	 * @param startDate if set, only lists synchronisation having started after this date
+	 * @param endDate if set, only lists synchronisation having ended before this date
+	 * @return A list of synchronisations
+    * @throws ClientException
+    * 			A client exception
+    * @throws ResponseException
+    * 			A response exception
+	* @throws UnsupportedEncodingException
+	*    		An Unsupported Encoding Exception
+	 */
 	public List<Synchronization> searchSynchronizations(String customerAccountId, String customerUserId, Date startDate,
-			Date endDate) throws ClientException, ResponseException {
+			Date endDate) throws ClientException, ResponseException, UnsupportedEncodingException {
 
 		if (Utils.nullOrEmpty(customerUserId) && Utils.nullOrEmpty(customerAccountId))
 			throw new IllegalArgumentException(
@@ -70,6 +87,16 @@ public class Synchronizations {
 		});
 	}
 
+	/**
+	 * Acknowledges a delivery of documents
+	 * @param customerAccountId The customer account identifier
+	 * @param documentIds The ids of all the documents retrieved during the synchronization, as listed in the synchronization report
+	 * @param missingDocumentIds The ids of the documents not received
+    * @throws ClientException
+    * 			A client exception
+    * @throws ResponseException
+    * 			A response exception
+	 */
 	public void acknowledgeSynchronizationDelivery(String customerAccountId, long[] documentIds,
 			long[] missingDocumentIds) throws ClientException, ResponseException {
 		

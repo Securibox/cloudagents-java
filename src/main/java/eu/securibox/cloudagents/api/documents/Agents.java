@@ -1,22 +1,11 @@
   /**
-   * Copyright (C) 2016 Securibox
+   * Copyright (C) 2021 Securibox
    * 
-   * This program is free software: you can redistribute it and/or modify 
-   * it under the terms of the GNU General Public License as published by 
-   * the Free Software Foundation, either version 3 of the License, or 
-   * (at your option) any later version.
-   * 
-   * This program is distributed in the hope that it will be useful, 
-   * but WITHOUT ANY WARRANTY; without even the implied warranty of 
-   * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
-   * GNU General Public License for more details.
-   * 
-   * You should have received a copy of the GNU General Public License 
-   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
    */
 
 package eu.securibox.cloudagents.api.documents;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -36,16 +25,56 @@ import eu.securibox.cloudagents.api.documents.beans.Agent;
 public class Agents {
 
 	private String path = "agents/";
+	/**
+	   * Lists agents
+	   * @return A list of agents
+	   * @throws ClientException
+	   * 			A client exception
+	   * @throws ResponseException
+	   * 			A response exception
+	   * @throws UnsupportedEncodingException
+	   * 			An Unsupported Encoding Exception
+	   */	
+	public List<Agent> listAgents() throws ClientException, ResponseException, UnsupportedEncodingException {
+		return this.listAgents(null, false);
+	}
+	/**
+	   * Lists agents
+	   * @param culture The culture of the returned information
+	   * @return A list of agents
+	   * @throws ClientException
+	   * 			A client exception
+	   * @throws ResponseException
+	   * 			A response exception
+	   * @throws UnsupportedEncodingException
+	   * 			An Unsupported Encoding Exception
+	   */	
+	public List<Agent> listAgents(String culture) throws ClientException, ResponseException, UnsupportedEncodingException {
+		return this.listAgents(culture, false);
+	}
 
-	public List<Agent> listAgents(String culture) throws ClientException, ResponseException {
+	/**
+	   * Lists agents
+	   * @param culture The culture of the returned information
+	   * @param includeLogo Specifies if the response should include the agent's logo encoded in base 64.
+	   * @return A list of agents
+	   * @throws ClientException
+	   * 			A client exception
+	   * @throws ResponseException
+	   * 			A response exception
+	   * @throws UnsupportedEncodingException
+	   * 			An Unsupported Encoding Exception
+	   */
+	public List<Agent> listAgents(String culture, boolean includeLogo) throws ClientException, ResponseException, UnsupportedEncodingException {
 
 		Client c = ApiClient.getClient();
 
 		String url = path;
-		if(!Utils.nullOrEmpty(culture)){
-			UriParameters par = new UriParameters();
-			par.put("culture", culture);
-			url += "?" + par.getParameterString();			
+		UriParameters parameters = new UriParameters();
+		parameters.put("culture", culture);
+		parameters.put("includeLogo", includeLogo);			
+		if(parameters.size() > 0) {
+			url += "?" + parameters.getParameterString();
 		}
 
 		Response r = c.get(url);
@@ -53,7 +82,21 @@ public class Agents {
 		});
 	}
 
-	public List<Agent> searchAgents(CountryCode countryCode, String culture, String query) throws ClientException, ResponseException {
+	 /**
+	   * Filters agents within all available agents
+	   * @param countryCode The desired agents country
+	   * @param culture The culture of the returned information
+	   * @param includeLogo Specifies if the response should include the agent's logo encoded in base 64.
+	   * @param query The query string that will filter agents starting with the defined prefix
+	   * @return A list of agents
+	   * @throws ClientException
+	   * 			A client exception
+	   * @throws ResponseException
+	   * 			A response exception
+	   * @throws UnsupportedEncodingException
+	   * 			An Unsupported Encoding Exception
+	   */ 
+	public List<Agent> searchAgents(CountryCode countryCode, String culture, boolean includeLogo, String query) throws ClientException, ResponseException, UnsupportedEncodingException {
 
 		Client c = ApiClient.getClient();
 
@@ -62,15 +105,31 @@ public class Agents {
 		UriParameters par = new UriParameters();
 		par.put("countryCode", countryCode);
 		par.put("culture", culture);
+		par.put("includeLogo", includeLogo);
 		par.put("q", query);
 		
-		Response r = c.get(url + par.getParameterString());
+		String url1 = url + par.getParameterString();
+		
+		Response r = c.get(url1);
 		return c.deserialize(r.getBody(), new TypeReference<List<Agent>>() {
 		});
 	}
 
+	 /**
+	   * Gets an agent by its identifier.
+	   * @param agentId String The agent identifier
+	   * @param skip Number of entries to skip for pagination purposes (optional)
+	   * @param take Number of entries to take for pagination purposes (optional)
+	   * @return A list of accounts for the provided agent identifier
+	   * @throws ClientException
+	   * 			A client exception
+	   * @throws ResponseException
+	   * 			A response exception
+	   * @throws UnsupportedEncodingException
+	   * 			An Unsupported Encoding Exception
+	   */ 
 	public List<Account> listAccountsByAgent(String agentId, int skip, int take)
-			throws ClientException, ResponseException {
+			throws ClientException, ResponseException, UnsupportedEncodingException {
 
 		if (Utils.nullOrEmpty(agentId))
 			throw new IllegalArgumentException("No agentId provided");
@@ -86,5 +145,31 @@ public class Agents {
 		Response r = c.get(url + par.getParameterString());
 		return c.deserialize(r.getBody(), new TypeReference<List<Account>>() {
 		});
+	}
+	
+	 /**
+	   * Gets an agent by its identifier.
+	   * @param agentId String The agent identifier
+	   * @return The agent
+	   * @throws ClientException
+	   * 			A client exception
+	   * @throws ResponseException
+	   * 			A response exception
+	   */ 
+	public Agent getAgentByIdentifier(String agentId) throws ClientException, ResponseException {
+		if(Utils.nullOrEmpty(agentId)) {
+			throw new IllegalArgumentException("No agentId provided");
+		}
+		
+		Client c = ApiClient.getClient();
+		String url = path + agentId;
+		try {
+			Response r = c.get(url);
+			return c.deserialize(r.getBody(), new TypeReference<Agent>() {
+			});
+		}
+		catch(ResponseException ex) {
+			return null;
+		}
 	}
 }

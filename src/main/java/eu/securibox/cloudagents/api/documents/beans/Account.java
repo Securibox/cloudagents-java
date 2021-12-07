@@ -1,11 +1,13 @@
 package eu.securibox.cloudagents.api.documents.beans;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
-// TODO: Auto-generated Javadoc
+import eu.securibox.cloudagents.core.types.AccountMode;
+
 /**
- * The Class Account.
+ * Object representing one agent account of the user
  */
 public class Account {
 	
@@ -23,9 +25,21 @@ public class Account {
 	
 	/** The credentials. */
 	private List<Credential> credentials;
+	
+	/** the account mode. */
+	private AccountMode mode;
+	
+	/** Multi factor authentication data  */
+	private AdditionalAuthData additionalAuthenticationData; 
 
 	/**
-	 * Gets the customer account id.
+	 * Initialises the class and all list attributes.
+	 */
+	public Account() {
+		credentials = new ArrayList<Credential>();
+	}
+	/**
+	 * Gets an account ID (either provided at creation time or automatically generated).
 	 *
 	 * @return the customer account id
 	 */
@@ -34,7 +48,7 @@ public class Account {
 	}
 
 	/**
-	 * Sets the customer account id.
+	 * Sets an account ID
 	 *
 	 * @param customerAccountId the new customer account id
 	 */
@@ -112,5 +126,32 @@ public class Account {
 	 */
 	public List<Credential> getCredentials() {
 		return this.credentials;
+	}
+	
+	/**
+	 * Gets the account synchronisation mode.
+	 *
+	 * @return String the account synchronisation mode
+	 */
+	public AccountMode getMode() {
+		return this.mode;
+	}
+	
+	/**
+	 * Sets the account synchronisation mode.
+	 *
+	 * @param mode the account synchronisation mode.
+	 */
+	public void setMode(AccountMode mode) {
+		this.mode = mode;
+	}
+	
+	/**
+	 * Gets the additional authentication data used in multi-factor authentication scenarios.
+	 *
+	 * @return AdditionalAuthData the additional authentication
+	 */
+	public AdditionalAuthData getAdditionalAuthenticationData() {
+		return this.additionalAuthenticationData;
 	}
 }

@@ -1,3 +1,6 @@
+  /**
+   * Copyright (C) 2021 Securibox
+   */
 package eu.securibox.cloudagents.core;
 
 public class Utils {

@@ -84,6 +84,9 @@ public class Agent {
 	/** The creation date. */
 	@JsonDeserialize(using = DateDeserializer.class)
 	private Date creationDate;
+	
+	/** The value indicating whether this agent uses multifactor authentication. */
+	private boolean isMFA;
 
 	/**
 	 * Gets the id.
@@ -245,5 +248,14 @@ public class Agent {
 	 */
 	public Date getCreationDate() {
 		return this.creationDate;
+	}
+	
+	/**
+	 * Gets a value indicating whether this agent uses multifactor authentication.
+	 *
+	 * @return true if the agent is an MFA agent, false otherwise.
+	 */
+	public boolean getIsMFA() {
+		return this.isMFA;
 	}
 }

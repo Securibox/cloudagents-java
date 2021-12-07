@@ -59,7 +59,8 @@ public class HttpClient implements Client {
 		if(!Utils.nullOrEmpty(basicUser)){
 			cfg = SSLConfiguration.Basic(store, basicUser, p.getProperty("client.password"));
 		}
-		else if(!Utils.nullOrEmpty(keyStoreFile)){
+		else if(!Utils.nullOrEmpty(keyStoreFile))
+		{
 			cfg = SSLConfiguration.ClientCertificate(store, keyStoreFile, p.getProperty("keystore.password"), p.getProperty("keystore.privatekeypassword"));
 		}
 		else{

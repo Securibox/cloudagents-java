@@ -1,24 +1,12 @@
   /**
-   * Copyright (C) 2016 Securibox
-   * 
-   * This program is free software: you can redistribute it and/or modify 
-   * it under the terms of the GNU General Public License as published by 
-   * the Free Software Foundation, either version 3 of the License, or 
-   * (at your option) any later version.
-   * 
-   * This program is distributed in the hope that it will be useful, 
-   * but WITHOUT ANY WARRANTY; without even the implied warranty of 
-   * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
-   * GNU General Public License for more details.
-   * 
-   * You should have received a copy of the GNU General Public License 
-   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+   * Copyright (C) 2021 Securibox
    */
 
 package eu.securibox.cloudagents.api.documents;
 
 import eu.securibox.cloudagents.core.Client;
 import eu.securibox.cloudagents.core.SecurityConfiguration;
+import eu.securibox.cloudagents.core.Utils;
 import eu.securibox.cloudagents.core.exceptions.SecurityConfigurationException;
 import eu.securibox.cloudagents.core.http.HttpClient;
 
@@ -44,10 +32,23 @@ public class ApiClient {
 	/**
 	 * Configure the client programmatically.
 	 *
+	 * @param configuration the configuration
+	 */
+	public static void ConfigureClient(SecurityConfiguration configuration) {
+		
+		ApiClient.client = new HttpClient(null, configuration);
+	}
+	
+	/**
+	 * Configure the client programmatically.
+	 *
 	 * @param baseUrl the base url
 	 * @param configuration the configuration
 	 */
 	public static void ConfigureClient(String baseUrl, SecurityConfiguration configuration) {
+		if(Utils.nullOrEmpty(baseUrl)) {
+			baseUrl = "https://sca-multitenant.securibox.eu/api/v1/";
+		}
 		ApiClient.client = new HttpClient(baseUrl, configuration);
 	}
 	
@@ -100,9 +101,9 @@ public class ApiClient {
 	}
 	
 	/**
-	 * Gets the synchronization manager.
+	 * Gets the synchronisation manager.
 	 *
-	 * @return the synchronization manager
+	 * @return the synchronisation manager
 	 */
 	public static Synchronizations getSynchronizationManager(){
 		return new Synchronizations();

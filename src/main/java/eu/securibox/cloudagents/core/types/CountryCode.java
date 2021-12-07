@@ -12,145 +12,257 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @JsonDeserialize(using = CountryCodeDeserializer.class)
 @JsonSerialize(using = CountryCodeSerializer.class)
 public enum CountryCode {
-    Undefined(0),				//Undefined
-    GLOBAL(1),					//Special value for defining global country code
-    AE(2),						//U.A.E.
-    AF(3),						//Afghanistan
-    AL(4),						//Albania
-    AM(5),						//Armenia
-    AR(6),						//Argentina
-    AT(7),						//Austria
-    AU(8),						//Australia
-    AZ(9),						//Azerbaijan
-    BA(10),						//Bosnia and Herzegovina
-    BD(11),						//Bangladesh
-    BE(12),						//Belgium
-    BG(13),						//Bulgaria
-    BH(14),						//Bahrain
-    BN(15),						//Brunei Darussalam
-    BO(16),						//Bolivia
-    BR(17),						//Brazil
-    BW(18),						//Botswana
-    BY(19),						//Belarus
-    BZ(20),						//Belize
-    CA(21),						//Canada
-    CD(22),						//Congo [DRC]
-    CH(23),						//Switzerland
-    CI(24),						//Ivory Coast
-    CL(25),						//Chile
-    CM(26),						//Cameroon
-    CN(27),						//China
-    CO(28),						//Colombia
-    CR(29),						//Costa Rica
-    CS(30),						//Serbia and Montenegro (Former)
-    CZ(31),						//Czech Republic
-    DE(32),						//Germany
-    DK(33),						//Denmark
-    DO(34),						//Dominican Republic
-    DZ(35),						//Algeria
-    EC(36),						//Ecuador
-    EE(37),						//Estonia
-    EG(38),						//Egypt
-    ER(39),						//Eritrea
-    ES(40),						//Spain
-    ET(41),						//Ethiopia
-    FI(42),						//Finland
-    FO(43),						//Faroe Islands
-    FR(44),						//France
-    GB(45),						//United Kingdom
-    GE(46),						//Georgia
-    GL(47),						//Greenland
-    GR(48),						//Greece
-    GT(49),						//Guatemala
-    HK(50),						//Hong Kong
-    HN(51),						//Honduras
-    HR(52),						//Croatia
-    HT(53),						//Haiti
-    HU(54),						//Hungary
-    ID(55),						//Indonesia
-    IE(56),						//Ireland
-    IL(57),						//Israel
-    IN(58),						//India
-    IQ(59),						//Iraq
-    IR(60),						//Iran
-    IS(61),						//Iceland
-    IT(62),						//Italy
-    JM(63),						//Jamaica
-    JO(64),						//Jordan
-    JP(65),						//Japan
-    KE(66),						//Kenya
-    KG(67),						//Kyrgyzstan
-    KH(68),						//Cambodia
-    KR(69),						//Korea
-    KW(70),						//Kuwait
-    KZ(71),						//Kazakhstan
-    LA(72),						//Lao PDR
-    LB(73),						//Lebanon
-    LI(74),						//Liechtenstein
-    LK(75),						//Sri Lanka
-    LT(76),						//Lithuania
-    LU(77),						//Luxembourg
-    LV(78),						//Latvia
-    LY(79),						//Libya
-    MA(80),						//Morocco
-    MC(81),						//Principality of Monaco
-    MD(82),						//Moldova
-    ME(83),						//Montenegro
-    MK(84),						//Macedonia (Former Yugoslav Republic of Macedonia)
-    ML(85),						//Mali
-    MM(86),						//Myanmar
-    MN(87),						//Mongolia
-    MO(88),						//Macao SAR
-    MT(89),						//Malta
-    MV(90),						//Maldives
-    MX(91),						//Mexico
-    MY(92),						//Malaysia
-    NG(93),						//Nigeria
-    NI(94),						//Nicaragua
-    NL(95),						//Netherlands
-    NO(96),						//Norway
-    NP(97),						//Nepal
-    NZ(98),						//New Zealand
-    OM(99),						//Oman
-    PA(100),						//Panama
-    PE(101),						//Peru
-    PH(102),						//Philippines
-    PK(103),						//Pakistan
-    PL(104),						//Poland
-    PR(105),						//Puerto Rico
-    PT(106),						//Portugal
-    PY(107),						//Paraguay
-    QA(108),						//Qatar
-    RE(109),						//Réunion
-    RO(110),						//Romania
-    RS(111),						//Serbia
-    RU(112),						//Russia
-    RW(113),						//Rwanda
-    SA(114),						//Saudi Arabia
-    SE(115),						//Sweden
-    SG(116),						//Singapore
-    SI(117),						//Slovenia
-    SK(118),						//Slovakia
-    SN(119),						//Senegal
-    SO(120),						//Somalia
-    SV(121),						//El Salvador
-    SY(122),						//Syria
-    TH(123),						//Thailand
-    TJ(124),						//Tajikistan
-    TM(125),						//Turkmenistan
-    TN(126),						//Tunisia
-    TR(127),						//Turkey
-    TT(128),						//Trinidad and Tobago
-    TW(129),						//Taiwan
-    UA(130),						//Ukraine
-    US(131),						//United States
-    UY(132),						//Uruguay
-    UZ(133),						//Uzbekistan
-    VE(134),						//Bolivarian Republic of Venezuela
-    VN(135),						//Vietnam
-    YE(136),						//Yemen
-    ZA(137),						//South Africa
-    ZW(138);						//Zimbabwe
+	Undefined(0),//Undefined
+    GLOBAL(1),//Special value for defining global country code
+    AF(4),
+    AX(248),
+    AL(8),
+    DZ(12),
+    AS(16),
+    AD(20),
+    AO(24),
+    AI(660),
+    AQ(10),
+    AG(28),
+    AR(32),
+    AM(51),
+    AW(533),
+    AU(36),
+    AT(40),
+    AZ(31),
+    BS(44),
+    BH(48),
+    BD(50),
+    BB(52),
+    BY(112),
+    BE(56),
+    BZ(84),
+    BJ(204),
+    BM(60),
+    BT(64),
+    BO(68),
+    BQ(535),
+    BA(70),
+    BW(72),
+    BV(74),
+    BR(76),
+    IO(86),
+    BN(96),
+    BG(100),
+    BF(854),
+    BI(108),
+    KH(116),
+    CM(120),
+    CA(124),
+    CV(132),
+    KY(136),
+    CF(140),
+    TD(148),
+    CL(152),
+    CN(156),
+    CX(162),
+    CC(166),
+    CO(170),
+    KM(174),
+    CG(178),
+    CD(180),
+    CK(184),
+    CR(188),
+    CI(384),
+    HR(191),
+    CU(192),
+    CW(531),
+    CY(196),
+    CZ(203),
+    DK(208),
+    DJ(262),
+    DM(212),
+    DO(214),
+    EC(218),
+    EG(818),
+    SV(222),
+    GQ(226),
+    ER(232),
+    EE(233),
+    ET(231),
+    FK(238),
+    FO(234),
+    FJ(242),
+    FI(246),
+    FR(250),
+    GF(254),
+    PF(258),
+    TF(260),
+    GA(266),
+    GM(270),
+    GE(268),
+    DE(276),
+    GH(288),
+    GI(292),
+    GR(300),
+    GL(304),
+    GD(308),
+    GP(312),
+    GU(316),
+    GT(320),
+    GG(831),
+    GN(324),
+    GW(624),
+    GY(328),
+    HT(332),
+    HM(334),
+    VA(336),
+    HN(340),
+    HK(344),
+    HU(348),
+    IS(352),
+    IN(356),
+    ID(360),
+    IR(364),
+    IQ(368),
+    IE(372),
+    IM(833),
+    IL(376),
+    IT(380),
+    JM(388),
+    JP(392),
+    JE(832),
+    JO(400),
+    KZ(398),
+    KE(404),
+    KI(296),
+    KP(408),
+    KR(410),
+    KW(414),
+    KG(417),
+    LA(418),
+    LV(428),
+    LB(422),
+    LS(426),
+    LR(430),
+    LY(434),
+    LI(438),
+    LT(440),
+    LU(442),
+    MO(446),
+    MK(807),
+    MG(450),
+    MW(454),
+    MY(458),
+    MV(462),
+    ML(466),
+    MT(470),
+    MH(584),
+    MQ(474),
+    MR(478),
+    MU(480),
+    YT(175),
+    MX(484),
+    FM(583),
+    MD(498),
+    MC(492),
+    MN(496),
+    ME(499),
+    MS(500),
+    MA(504),
+    MZ(508),
+    MM(104),
+    NA(516),
+    NR(520),
+    NP(524),
+    NL(528),
+    NC(540),
+    NZ(554),
+    NI(558),
+    NE(562),
+    NG(566),
+    NU(570),
+    NF(574),
+    MP(580),
+    NO(578),
+    OM(512),
+    PK(586),
+    PW(585),
+    PS(275),
+    PA(591),
+    PG(598),
+    PY(600),
+    PE(604),
+    PH(608),
+    PN(612),
+    PL(616),
+    PT(620),
+    PR(630),
+    QA(634),
+    RE(638),
+    RO(642),
+    RU(643),
+    RW(646),
+    BL(652),
+    SH(654),
+    KN(659),
+    LC(662),
+    MF(663),
+    PM(666),
+    VC(670),
+    WS(882),
+    SM(674),
+    ST(678),
+    SA(682),
+    SN(686),
+    RS(688),
+    SC(690),
+    SL(694),
+    SG(702),
+    SX(534),
+    SK(703),
+    SI(705),
+    SB(90),
+    SO(706),
+    ZA(710),
+    GS(239),
+    SS(728),
+    ES(724),
+    LK(144),
+    SD(729),
+    SR(740),
+    SJ(744),
+    SZ(748),
+    SE(752),
+    CH(756),
+    SY(760),
+    TW(158),
+    TJ(762),
+    TZ(834),
+    TH(764),
+    TL(626),
+    TG(768),
+    TK(772),
+    TO(776),
+    TT(780),
+    TN(788),
+    TR(792),
+    TM(795),
+    TC(796),
+    TV(798),
+    UG(800),
+    UA(804),
+    AE(784),
+    GB(826),
+    US(840),
+    UM(581),
+    UY(858),
+    UZ(860),
+    VU(548),
+    VE(862),
+    VN(704),
+    VG(92),
+    VI(850),
+    WF(876),
+    EH(732),
+    YE(887),
+    ZM(894),
+    ZW(716);
 
 	/** The code. */
 	private int code;

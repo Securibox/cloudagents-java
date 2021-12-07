@@ -110,7 +110,7 @@ public class SSLConfiguration implements SecurityConfiguration {
 			SSLContextBuilder contextBuilder = SSLConfiguration.getSSLContextBuilder(store);
 
 			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(contextBuilder.build(),
-					new String[] { "TLSv1" }, null, SSLConnectionSocketFactory.getDefaultHostnameVerifier());
+					new String[] { "TLSv1.2", "TLSv1.3" }, null, SSLConnectionSocketFactory.getDefaultHostnameVerifier());
 
 			HttpClientBuilder clientBuilder = HttpClients.custom();
 			clientBuilder.setSSLSocketFactory(sslsf);
@@ -184,7 +184,7 @@ public class SSLConfiguration implements SecurityConfiguration {
 					keyStorePrivateKeyPassword.toCharArray());
 
 			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(contextBuilder.build(),
-					new String[] { "TLSv1" }, null, SSLConnectionSocketFactory.getDefaultHostnameVerifier());
+					new String[] { "TLSv1.2", "TLSv1.3" }, null, SSLConnectionSocketFactory.getDefaultHostnameVerifier());
 			HttpClientBuilder clientBuilder = HttpClients.custom();
 			clientBuilder.setSSLSocketFactory(sslsf);
 
@@ -215,6 +215,33 @@ public class SSLConfiguration implements SecurityConfiguration {
 			throw new SecurityConfigurationException(e);
 		}
 	}
+	
+	/**
+	 * Create a new SSL configuration using JWT authentication. 
+	 * If no TrustStore is specified, Java VM trust store will be used.
+	 *
+	 * @param store
+	 *            the store
+	 * @param publicKeyFilePath
+	 *            The public key file path (PEM Format)
+	 *            openssl rsa -in privatekey.pem -out publickey.pem -pubout
+	 * @param privateKeyFilePath
+	 *            The private key file path (PKCS#8)
+	 *            openssl pkcs8 -in privatekey.pem -topk8 -out privatekey-pkcs8.pem
+	 * @param privateKeyPassword
+	 *            The private key password
+	 * @param customerUserId
+	 *            The customer user id          
+	 * @return the security configuration
+	 * @throws Exception Generic exception
+	 * @throws InvalidKeySpecException Invalid key exception
+	 * @throws InvalidAlgorithmParameterException  Invalid Algorithm Parameter Exception
+	 * @throws NoSuchPaddingException No Such Padding Exception
+	 * @throws InvalidKeyException Invalid Key Exception
+	 */	
+	public static SecurityConfiguration JWT(TrustStore store, String publicKeyFilePath, String privateKeyFilePath, String privateKeyPassword, String customerUserId) throws Exception {
+		return SSLConfiguration.JWT(store, publicKeyFilePath, privateKeyFilePath, privateKeyPassword, customerUserId, null);
+	}
 
 	/**
 	 * Create a new SSL configuration using JWT authentication. 
@@ -229,17 +256,25 @@ public class SSLConfiguration implements SecurityConfiguration {
 	 *            The private key file path (PKCS#8)
 	 *            openssl pkcs8 -in privatekey.pem -topk8 -out privatekey-pkcs8.pem
 	 * @param privateKeyPassword
-	 *            The private key password          
+	 *            The private key password
+	 * @param customerUserId
+	 *            The customer user id    
+	 * @param audience
+	 *            The audience (SCA environment) of the token           
 	 * @return the security configuration
-	 * @throws Exception 
-	 * @throws InvalidKeySpecException 
-	 * @throws InvalidAlgorithmParameterException 
-	 * @throws NoSuchPaddingException 
-	 * @throws InvalidKeyException 
+	 * @throws Exception Generic exception
+	 * @throws InvalidKeySpecException Invalid key exception
+	 * @throws InvalidAlgorithmParameterException  Invalid Algorithm Parameter Exception
+	 * @throws NoSuchPaddingException No Such Padding Exception
+	 * @throws InvalidKeyException Invalid Key Exception
 	 */	
-	public static SecurityConfiguration JWT(TrustStore store, String publicKeyFilePath, String privateKeyFilePath, String privateKeyPassword) throws Exception {
+	public static SecurityConfiguration JWT(TrustStore store, String publicKeyFilePath, String privateKeyFilePath, String privateKeyPassword, String customerUserId, String audience) throws Exception {
 		
 		try {
+			
+			if(Utils.nullOrEmpty(audience)) {
+				audience = "https://sca-multitenant.securibox.eu";
+			}
 
 			SSLConfiguration cfg = new SSLConfiguration();
 
@@ -247,7 +282,7 @@ public class SSLConfiguration implements SecurityConfiguration {
 			SSLContextBuilder contextBuilder = SSLConfiguration.getSSLContextBuilder(store);
 
 			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(contextBuilder.build(),
-					new String[] { "TLSv1" }, null, SSLConnectionSocketFactory.getDefaultHostnameVerifier());
+					new String[] { "TLSv1.2", "TLSv1.3" }, null, SSLConnectionSocketFactory.getDefaultHostnameVerifier());
 
 			HttpClientBuilder clientBuilder = HttpClients.custom();
 			
@@ -265,7 +300,8 @@ public class SSLConfiguration implements SecurityConfiguration {
 					.withIssuer("SCA API SDK")
 			        .withIssuedAt(date)
 			        .withExpiresAt(expiresAt)
-			        .withAudience("https://sca-multitenant.securibox.eu")
+			        .withAudience(audience)
+			        .withClaim("uid", customerUserId)
 			        .sign(JwtAlgorithm);
 			
 			Header jwtHeader = new BasicHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token);
@@ -345,7 +381,9 @@ public class SSLConfiguration implements SecurityConfiguration {
 	            .replace("-----BEGIN PRIVATE KEY-----", "")
 	            .replace("-----END PRIVATE KEY-----", "")
 	            .replace("-----BEGIN ENCRYPTED PRIVATE KEY-----", "")
-	            .replace("-----END ENCRYPTED PRIVATE KEY-----", "")	            
+	            .replace("-----END ENCRYPTED PRIVATE KEY-----", "")	     
+	            .replace("-----BEGIN RSA PRIVATE KEY-----", "")
+	            .replace("-----END RSA PRIVATE KEY-----", "")
 	            .replaceAll("\\s", "");
 
 	    // decode to get the binary DER representation

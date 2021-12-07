@@ -1,22 +1,11 @@
   /**
-   * Copyright (C) 2016 Securibox
+   * Copyright (C) 2021 Securibox
    * 
-   * This program is free software: you can redistribute it and/or modify 
-   * it under the terms of the GNU General Public License as published by 
-   * the Free Software Foundation, either version 3 of the License, or 
-   * (at your option) any later version.
-   * 
-   * This program is distributed in the hope that it will be useful, 
-   * but WITHOUT ANY WARRANTY; without even the implied warranty of 
-   * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
-   * GNU General Public License for more details.
-   * 
-   * You should have received a copy of the GNU General Public License 
-   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
    */
 
 package eu.securibox.cloudagents.api.documents;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -28,13 +17,30 @@ import eu.securibox.cloudagents.core.http.UriParameters;
 
 import eu.securibox.cloudagents.api.documents.beans.Document;
 
-
+/**
+ * Wrapper for the Documents related methods.
+ *
+ */
 public class Documents {
 	
 	private static String path = "documents/";
 	
+	/**
+	* Searches the documents.
+	* @param customerAccountId Filter documents by the provided customer account identifier
+	* @param customerUserId Filter documents by the provided customer user identifier
+	* @param pendingOnly if set to true, only lists documents that haven't been acknowledged.
+	* @param includeContent specifies if the response should include the document content in base64 encoding.
+	* @return A list of documents
+    * @throws ClientException
+    * 			A client exception
+    * @throws ResponseException
+    * 			A response exception
+	* @throws UnsupportedEncodingException
+	*    		An Unsupported Encoding Exception
+	*/
 	public List<Document> searchDocuments(String customerAccountId, String customerUserId, boolean pendingOnly,
-			boolean includeContent) throws ClientException, ResponseException {
+			boolean includeContent) throws ClientException, ResponseException, UnsupportedEncodingException {
 		Client c = ApiClient.getClient();
 		
 		UriParameters pars = new UriParameters();
@@ -47,7 +53,19 @@ public class Documents {
 		return c.deserialize(r.getBody(), new TypeReference<List<Document>>(){});
 	}
 
-	public Document getDocument(long id, boolean includeContent) throws ClientException, ResponseException {
+	/**
+	 * Gets a specific document.
+	 * @param id The document identifier
+	 * @param includeContent specifies if the response should include the document content in base64 encoding.
+	 * @return A document object
+    * @throws ClientException
+    * 			A client exception
+    * @throws ResponseException
+    * 			A response exception
+	* @throws UnsupportedEncodingException
+	*    		An Unsupported Encoding Exception
+	 */
+	public Document getDocument(long id, boolean includeContent) throws ClientException, ResponseException, UnsupportedEncodingException {
 		Client c = ApiClient.getClient();
 		
 		UriParameters pars = new UriParameters();
@@ -57,6 +75,14 @@ public class Documents {
 		return c.deserialize(r.getBody(), new TypeReference<Document>(){});
 	}
 
+	/**
+	 * Acknowledges the document delivery.
+	 * @param id The document identifier
+    * @throws ClientException
+    * 			A client exception
+    * @throws ResponseException
+    * 			A response exception
+	 */
 	public void acknowledgeDocumentDelivery(long id) throws ClientException, ResponseException {
 		Client c = ApiClient.getClient();
 		

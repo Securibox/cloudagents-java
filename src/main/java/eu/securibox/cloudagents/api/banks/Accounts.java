@@ -1,5 +1,6 @@
 package eu.securibox.cloudagents.api.banks;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -47,7 +48,7 @@ public class Accounts {
 		c.delete(path + customerAccountId);
 	}
 
-	public List<Account> listAccounts(int skip, int take) throws ClientException, ResponseException {
+	public List<Account> listAccounts(int skip, int take) throws ClientException, ResponseException, UnsupportedEncodingException {
 		Client c = ApiClient.getClient();
 		
 		UriParameters par = new UriParameters();
@@ -58,7 +59,7 @@ public class Accounts {
 		return c.deserialize(r.getBody(), new TypeReference<List<Account>>(){});	
 	}
 
-	public List<Account> listAccountsByCustomerUserId(String customerUserId, int skip, int take) throws ClientException, ResponseException {
+	public List<Account> listAccountsByCustomerUserId(String customerUserId, int skip, int take) throws ClientException, ResponseException, UnsupportedEncodingException {
 		Client c = ApiClient.getClient();
 		
 		UriParameters par = new UriParameters();

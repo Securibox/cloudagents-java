@@ -1,97 +1,92 @@
   /**
-   * Copyright (C) 2016 Securibox
-   * 
-   * This program is free software: you can redistribute it and/or modify 
-   * it under the terms of the GNU General Public License as published by 
-   * the Free Software Foundation, either version 3 of the License, or 
-   * (at your option) any later version.
-   * 
-   * This program is distributed in the hope that it will be useful, 
-   * but WITHOUT ANY WARRANTY; without even the implied warranty of 
-   * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
-   * GNU General Public License for more details.
-   * 
-   * You should have received a copy of the GNU General Public License 
-   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+   * Copyright (C) 2021 Securibox
    */
-
 package eu.securibox.cloudagents.api.documents.beans;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Enum SynchronizationStateDetails.
+ * Enumeration defining the synchronisation agent process (web scraping).
  */
 public enum SynchronizationStateDetails
     {
     
-    /** The new account. */
+    /** The synchronisation has just been created after an account creation. */
     NEW_ACCOUNT,  
     
-    /** The completed. */
+    /** The scraping has successfully finished. (green status) */
     COMPLETED, 
     
-    /** The completed nothing to download. */
+    /** The scraping has successfully finished but no documents to download have been found. (green status) */
     COMPLETED_NOTHING_TO_DOWNLOAD,
     
-    /** The completed nothing new to download. */
+    /** The synchronisation has successfully terminated but didn't find any documents to download. (green status) */
     COMPLETED_NOTHING_NEW_TO_DOWNLOAD,
     
-    /** The completed with missing docs. */
+    /** The synchronisation has successfully terminated but some documents counldn't be downloaded. (green status) */
     COMPLETED_WITH_MISSING_DOCS,  
     
-    /** The completed with errors. */
+    /** The synchronisation has successfully terminated but some errors occured. (orange status) */
     COMPLETED_WITH_ERRORS, 
         
-    /** The wrong credentials. */
+    /** The synchronisation has due to incorrect credentials. (red status) */
     WRONG_CREDENTIALS, 
     
-    /** The unexpected account data. */
+    /** Deprecated */
     UNEXPECTED_ACCOUNT_DATA,
         
-        /** The scheduled. */
-        SCHEDULED, 
+    /** The synchronisation request has been registered and will occur. */
+    SCHEDULED, 
     
-    /** The pending. */
+    /** The synchronisation is in the queue to be handled. */
     PENDING, 
     
-    /** The in progress. */
+    /** The synchronisation is in progress. */
     IN_PROGRESS, 
     
-    /** The dematerialisation needed. */
+    /** The user has not activated the electronic invoices. Therefore there is no document available on the website. */
     DEMATERIALISATION_NEEDED, 
     
-    /** The check account. */
+    /** The account is blocked. No new synchronisation will occur without the account information being updated. */
     CHECK_ACCOUNT,
     
-    /** The account blocked. */
+    /** The account has been blocked (too many login tries with a wrong password). */
     ACCOUNT_BLOCKED,
     
-    /** The additional authentication required. */
+    /** The agent web site is requiring the user to go through one more authentication step. */
     ADDITIONAL_AUTHENTICATION_REQUIRED,
     
-    /** The login page changed. */
+    /** The login process has changed and the agent is not prepared to handle it. */
     LOGIN_PAGE_CHANGED,
     
-    /** The welcome page changed. */
+    /** The page just after the login phase has changed and the agent is not prepared to handle it. */
     WELCOME_PAGE_CHANGED,
     
-    /** The website in maintenance. */
+    /** The agent web site is in maintenance. */
     WEBSITE_IN_MAINTENANCE,
     
-    /** The website changed. */
+    /** The agent isn't prepared to handle the web site. It seems to have changed. */
     WEBSITE_CHANGED,
     
-    /** The reset password warning. */
+    /** The agent web site is warning the user that he will have to reset his password in the near future (limited account connexions with same password). */
     RESET_PASSWORD_WARNING,
     
-    /** The reset password required. */
+    /** The agent web site requires the password to be reset. */
     RESET_PASSWORD_REQUIRED,
     
-    /** The server unavailable. */
+    /** The agent web site is unavailable. */
     SERVER_UNAVAILABLE,
     
-    /** The personal notification. */
-    PERSONAL_NOTIFICATION
+    /** The web site is requiring the account owner to validate a notification.. */
+    PERSONAL_NOTIFICATION,
+    
+    /** There's a temporary error in the agent web site */
+    TEMPORARY_SERVER_ERROR,
+    /** A captcha needs to be solved for the agent to perform login */
+    CAPTCHA_FOUND,
+    /** The credential necessary for multi-factor authentication is wrong */
+    WRONG_OPTIONAL_CREDENTIALS,
+    /** The secret code for the multi-fact authentication is wrong */
+    WRONG_MFA_CODE
+    
     }
 
 
