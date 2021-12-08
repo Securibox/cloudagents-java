@@ -296,7 +296,7 @@ public enum CountryCode {
 	 *
 	 * @param text the text
 	 * @return the agent country code
-	 * @throws JsonMappingException the json mapping exception
+	 * @throws RuntimeJsonMappingException the json mapping exception
 	 */
 	public static CountryCode deserialize(String text) throws RuntimeJsonMappingException {
 		try {
