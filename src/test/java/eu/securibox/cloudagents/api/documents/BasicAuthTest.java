@@ -65,15 +65,15 @@ public class BasicAuthTest {
 	
 	@Test
 	public void A3_SearchAgentsTest() throws ClientException, ResponseException, UnsupportedEncodingException {
-		List<Agent> agents = ApiClient.getAgentManager().searchAgents(CountryCode.FR, null, false,null);
+		List<Agent> agents = ApiClient.getAgentManager().searchAgents(CountryCode.FR, null, false,null, false);
 		assertTrue(agents.size()>0);
-		agents = ApiClient.getAgentManager().searchAgents(null, "fr-FR", false,null);
+		agents = ApiClient.getAgentManager().searchAgents(null, "fr-FR", false,null,false);
 		assertTrue(agents.size()>0);
-		agents = ApiClient.getAgentManager().searchAgents(null, null, false,"Prixtel");
+		agents = ApiClient.getAgentManager().searchAgents(null, null, false,"Prixtel",false);
 		assertTrue(agents.size()>0);
-		agents = ApiClient.getAgentManager().searchAgents(null, null, false,"Non-existant agent name");
+		agents = ApiClient.getAgentManager().searchAgents(null, null, false,"Non-existant agent name", false);
 		assertTrue(agents.size() == 0);
-		agents = ApiClient.getAgentManager().searchAgents(CountryCode.AD, null, false,null);
+		agents = ApiClient.getAgentManager().searchAgents(CountryCode.AD, null, false,null,false);
 		assertTrue(agents.size() == 0);
 	}
 	

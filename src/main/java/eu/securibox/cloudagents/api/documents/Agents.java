@@ -36,7 +36,7 @@ public class Agents {
 	   * 			An Unsupported Encoding Exception
 	   */	
 	public List<Agent> listAgents() throws ClientException, ResponseException, UnsupportedEncodingException {
-		return this.listAgents(null, false);
+		return this.listAgents(null, false, false);
 	}
 	/**
 	   * Lists agents
@@ -50,9 +50,9 @@ public class Agents {
 	   * 			An Unsupported Encoding Exception
 	   */	
 	public List<Agent> listAgents(String culture) throws ClientException, ResponseException, UnsupportedEncodingException {
-		return this.listAgents(culture, false);
+		return this.listAgents(culture, false, false);
 	}
-
+	
 	/**
 	   * Lists agents
 	   * @param culture The culture of the returned information
@@ -64,15 +64,33 @@ public class Agents {
 	   * 			A response exception
 	   * @throws UnsupportedEncodingException
 	   * 			An Unsupported Encoding Exception
-	   */
+	   */	
 	public List<Agent> listAgents(String culture, boolean includeLogo) throws ClientException, ResponseException, UnsupportedEncodingException {
+		return this.listAgents(culture, includeLogo, false);
+	}
+
+	/**
+	   * Lists agents
+	   * @param culture The culture of the returned information
+	   * @param includeLogo Specifies if the response should include the agent's logo encoded in base 64.
+	   * @param includeDisabledAgents Specifies if the response should include the agents that are disabled.
+	   * @return A list of agents
+	   * @throws ClientException
+	   * 			A client exception
+	   * @throws ResponseException
+	   * 			A response exception
+	   * @throws UnsupportedEncodingException
+	   * 			An Unsupported Encoding Exception
+	   */
+	public List<Agent> listAgents(String culture, boolean includeLogo, boolean includeDisabledAgents) throws ClientException, ResponseException, UnsupportedEncodingException {
 
 		Client c = ApiClient.getClient();
 
 		String url = path;
 		UriParameters parameters = new UriParameters();
 		parameters.put("culture", culture);
-		parameters.put("includeLogo", includeLogo);			
+		parameters.put("includeLogo", includeLogo);
+		parameters.put("includeDisabledAgents", includeDisabledAgents);				
 		if(parameters.size() > 0) {
 			url += "?" + parameters.getParameterString();
 		}
@@ -88,6 +106,7 @@ public class Agents {
 	   * @param culture The culture of the returned information
 	   * @param includeLogo Specifies if the response should include the agent's logo encoded in base 64.
 	   * @param query The query string that will filter agents starting with the defined prefix
+	   * @param includeDisabledAgents Specifies if the response should include the agents that are disabled.
 	   * @return A list of agents
 	   * @throws ClientException
 	   * 			A client exception
@@ -96,7 +115,7 @@ public class Agents {
 	   * @throws UnsupportedEncodingException
 	   * 			An Unsupported Encoding Exception
 	   */ 
-	public List<Agent> searchAgents(CountryCode countryCode, String culture, boolean includeLogo, String query) throws ClientException, ResponseException, UnsupportedEncodingException {
+	public List<Agent> searchAgents(CountryCode countryCode, String culture, boolean includeLogo, String query, boolean includeDisabledAgents) throws ClientException, ResponseException, UnsupportedEncodingException {
 
 		Client c = ApiClient.getClient();
 
@@ -107,6 +126,7 @@ public class Agents {
 		par.put("culture", culture);
 		par.put("includeLogo", includeLogo);
 		par.put("q", query);
+		par.put("includeDisabledAgents", includeDisabledAgents);
 		
 		String url1 = url + par.getParameterString();
 		
