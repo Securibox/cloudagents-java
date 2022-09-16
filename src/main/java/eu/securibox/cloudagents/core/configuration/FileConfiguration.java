@@ -7,16 +7,12 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class FileConfiguration {
-	static public Properties getProperties(String filename) {
+	public static Properties getProperties(String filename) {
 		Properties properties = new Properties();
-		InputStream input;
-		try {
-			input = new FileInputStream(filename);
+		try (InputStream input = new FileInputStream(filename)) {
+			properties.load(input);
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException("The configuration file " + filename + " can not be found.", e);
-		}
-		try {
-			properties.load(input);
 		} catch (IOException e) {
 			throw new RuntimeException("Failed to load the configuration file " + filename + ".", e);
 		}
