@@ -78,7 +78,7 @@ public class Credential {
 	 * @param alg the encryption algorithm.
 	 */
 	public void setAlg(String alg){
-		if(alg != "none" && alg != "rsa"){
+		if(!"none".equals(alg) && !"rsa".equals(alg)){
 			throw new IllegalArgumentException("The only accepted algorithm values are 'none' or 'rsa'.");
 		}
 		this.alg = alg;
