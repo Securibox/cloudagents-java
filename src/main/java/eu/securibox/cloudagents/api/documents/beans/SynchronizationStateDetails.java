@@ -85,8 +85,14 @@ public enum SynchronizationStateDetails
     /** The credential necessary for multi-factor authentication is wrong */
     WRONG_OPTIONAL_CREDENTIALS,
     /** The secret code for the multi-fact authentication is wrong */
-    WRONG_MFA_CODE
-    
+    WRONG_MFA_CODE,
+    EXPIRED_MFA_CODE,
+    IDENTITY_PROVIDER_NOT_LINKED_TO_ACCOUNT,
+    PENDING_USER_VALIDATION,
+    LOGGED_OUT_DURING_DOWNLOAD,
+    PROXY_FAILURE,
+    BLOCKED_BY_WEBSITE_PROTECTION_SERVICE,
+    ADDITIONAL_AUTHENTICATION_REQUIRED_NOT_MFA
     }
 
 

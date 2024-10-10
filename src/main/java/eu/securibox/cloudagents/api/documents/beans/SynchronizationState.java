@@ -19,8 +19,8 @@ public enum SynchronizationState
     /** The running. */
     RUNNING,
     
-    /** The agent failed. */
-    AGENT_FAILED,
+    /** The documents are waiting to be delivered */
+    TO_DELIVER,
     
     /** The delivering. */
     DELIVERING,
@@ -32,7 +32,10 @@ public enum SynchronizationState
     COMPLETED,
     
     /** The report failed. */
-    REPORT_FAILED
+    REPORT_FAILED,
+    
+    /** The synchronization hasn't been acknowledged */
+    NOT_ACK
     }
 
 
