@@ -138,6 +138,16 @@
 				  </execution>
 				</executions>
 			</plugin>
+			
+	        <plugin>
+	          <groupId>org.sonatype.central</groupId>
+	          <artifactId>central-publishing-maven-plugin</artifactId>
+	          <version>0.6.0</version>
+	          <extensions>true</extensions>
+	          <configuration>
+	            <publishingServerId>central</publishingServerId>
+	          </configuration>
+	        </plugin>
 
 			<!--  -->
 			<plugin>
@@ -151,12 +161,22 @@
 				  <autoReleaseAfterClose>true</autoReleaseAfterClose>
 				</configuration>
 				<dependencies>
-				    <dependency>
-				      <groupId>com.thoughtworks.xstream</groupId>
-				      <artifactId>xstream</artifactId>
-				      <version>1.4.19</version> <!-- apparently this needs to be exactly this version -->
-				    </dependency>
-				  </dependencies>
+		          <dependency>
+		            <groupId>com.thoughtworks.xstream</groupId>
+		            <artifactId>xstream</artifactId>
+		            <version>1.4.17</version>
+		          </dependency>
+		          <dependency>
+		            <groupId>org.sonatype.nexus</groupId>
+		            <artifactId>nexus-client-core</artifactId>
+		            <version>2.14.20-02</version>
+		          </dependency>
+		          <dependency>
+		            <groupId>xpp3</groupId>
+		            <artifactId>xpp3_min</artifactId>
+		            <version>1.1.4c</version>
+		          </dependency>
+		        </dependencies>
 			</plugin>
 		
 		    <plugin>
