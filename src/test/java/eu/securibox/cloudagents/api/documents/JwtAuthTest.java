@@ -26,14 +26,14 @@ import eu.securibox.cloudagents.core.types.CountryCode;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class JwtAuthTest {
 
-	static final String agentId = "2ac0260f256e4d9fad963ac769b084cd";
+	static final String agentId = "93FDDB673A2D4FB49406F21A5937DC90";
 	static final String customerUserId = "UNITTESTS_JAVA_SDK";
 	static final String customerAccountId = "UNITTESTS_JAVA_SDK_UID";
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		SecurityConfiguration systConfig = SSLConfiguration.JWT(null, "C:\\Path\\To\\publicKey.pem", "C:\\Path\\To\\privateKey-pkcs8.pem", "Private_Key_Password", JwtAuthTest.customerUserId);
-		ApiClient.ConfigureClient("https://sca-testenv.securibox.eu/api/v1/",systConfig);
+		ApiClient.ConfigureClient("https://sca-multitenant.securibox.eu/api/v1/",systConfig);
 	}
 	@AfterClass
 	public static void ClearCreatedAccounts() throws Exception {
@@ -99,7 +99,7 @@ public class JwtAuthTest {
 		account.setAgentId(JwtAuthTest.agentId);
 		account.setCustomerUserId(JwtAuthTest.customerUserId);
 		account.setCustomerAccountId(JwtAuthTest.customerAccountId);
-		account.setName("Prixtel Test");
+		account.setName("FakeAgent Java SDK Test");
 		account.setMode(AccountMode.Enabled);
 		
 		Credential userName = new Credential(0, "username");
@@ -143,10 +143,10 @@ public class JwtAuthTest {
 		
 		Synchronization lastSynchronization = accountManager.getLastSynchronizationOfAccount(account.getCustomerAccountId());
 		assertNotNull(lastSynchronization);
-		while(lastSynchronization.getSynchronizationStateDetails() == SynchronizationStateDetails.NEW_ACCOUNT ||
-				lastSynchronization.getSynchronizationStateDetails() == SynchronizationStateDetails.SCHEDULED ||
-				lastSynchronization.getSynchronizationStateDetails() == SynchronizationStateDetails.PENDING ||
-				lastSynchronization.getSynchronizationStateDetails() == SynchronizationStateDetails.IN_PROGRESS){
+		while(lastSynchronization.getSynchronizationState() == SynchronizationState.CREATED ||
+				lastSynchronization.getSynchronizationState() == SynchronizationState.RUNNING ||
+				lastSynchronization.getSynchronizationState() == SynchronizationState.TO_DELIVER ||
+				lastSynchronization.getSynchronizationState() == SynchronizationState.DELIVERING){
 			Thread.sleep(5000);
 			lastSynchronization = accountManager.getLastSynchronizationOfAccount(account.getCustomerAccountId());
 		}

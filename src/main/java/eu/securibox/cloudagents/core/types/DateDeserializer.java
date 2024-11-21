@@ -21,7 +21,22 @@ public class DateDeserializer extends JsonDeserializer<Date>
         // "yyyy-MM-dd'T'HH:mm:ss.fffffff'Z'"
         // but java can't handle .NET 7 decimals.
         String date = jsonparser.getText();
-        date = date.substring(0,date.indexOf('.')+4);
+        
+        String[] dateParts = date.split("T");
+        if(dateParts.length == 2) {
+        	String[] timeParts = dateParts[1].split(":");
+        	String seconds = timeParts[timeParts.length - 1];
+        	if(seconds.indexOf('.') > -1) {
+        		seconds = seconds.substring(0,seconds.indexOf('.')+4) + "Z";
+        	}else {
+        		seconds = seconds.replaceFirst("Z", ".000Z");
+        	}
+        	timeParts[timeParts.length - 1] = seconds;
+        	dateParts[1] = String.join(":", timeParts);
+        	date = String.join("T", dateParts);
+        }else {
+        	throw new RuntimeException("Invalid date format");
+        }
         try {
             return format.parse(date);
         } catch (ParseException e) {

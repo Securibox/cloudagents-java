@@ -88,7 +88,7 @@ public class Accounts {
 		par.put("skip", pageSize*pageNumber);
 		par.put("take", pageNumber);
 
-		Response r = c.get(path + "?"+ par.getParameterString());
+		Response r = c.get(path + "/search?"+ par.getParameterString());
 		return c.deserialize(r.getBody(), new TypeReference<List<Account>>(){});		
 	}
 
