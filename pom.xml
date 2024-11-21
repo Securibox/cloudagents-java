@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>eu.securibox</groupId>
   <artifactId>cloudagents-java</artifactId>
-  <version>0.0.6</version>
+  <version>0.0.7</version>
   <name>Cloud Agents Java SDK</name>
   <url>https://sca.securibox.eu</url>
   <description>A Java client library for the Securibox Cloud Agents API for documents and bank accounts aggregation.</description>
