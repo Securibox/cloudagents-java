@@ -171,7 +171,7 @@ public class JwtAuthTest {
 		assertFalse(documents.isEmpty());
 		
 		Document firstDocument = documents.get(0);
-		documentManager.acknowledgeDocumentDelivery(firstDocument.getId());
+		documentManager.acknowledgeDocumentDelivery(firstDocument.getId(), false, false);
 		
 		List<Document> documentsAfterAck = documentManager.searchDocuments(JwtAuthTest.customerAccountId, JwtAuthTest.customerUserId, true, false);
 		

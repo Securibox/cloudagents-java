@@ -16,5 +16,8 @@ public enum SynchronizationMode {
 	CLIENT, 
 	
 	/** The automatic. */
-	AUTOMATIC
+	AUTOMATIC,
+
+	//** Admin mode */
+	ADMIN
 }

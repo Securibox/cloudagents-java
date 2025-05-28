@@ -169,11 +169,11 @@ public class BasicAuthTest {
 	@Test
 	public void D2_DocumentAcknowledgement() throws UnsupportedEncodingException, ClientException, ResponseException {
 		Documents documentManager = ApiClient.getDocumentManager();
-		List<Document> documents = documentManager.searchDocuments(BasicAuthTest.customerAccountId, BasicAuthTest.customerUserId, true, false);
+		List<Document> documents = documentManager.searchDocuments(BasicAuthTest.customerAccountId, BasicAuthTest.customerUserId, false, false);
 		assertFalse(documents.isEmpty());
 		
 		Document firstDocument = documents.get(0);
-		documentManager.acknowledgeDocumentDelivery(firstDocument.getId());
+		documentManager.acknowledgeDocumentDelivery(firstDocument.getId(),true, false);
 		
 		List<Document> documentsAfterAck = documentManager.searchDocuments(BasicAuthTest.customerAccountId, BasicAuthTest.customerUserId, true, false);
 		

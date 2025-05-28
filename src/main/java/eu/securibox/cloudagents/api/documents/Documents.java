@@ -83,11 +83,17 @@ public class Documents {
     * @throws ResponseException
     * 			A response exception
 	 */
-	public void acknowledgeDocumentDelivery(long id) throws ClientException, ResponseException {
+	public void acknowledgeDocumentDelivery(long id, boolean failed, boolean refused) throws ClientException, ResponseException, UnsupportedEncodingException {
 		Client c = ApiClient.getClient();
+		if (refused && failed) {
+			throw new IllegalArgumentException("Cannot acknowledge a document as both failed and refused at the same time.");	
+		}
+
+		UriParameters pars = new UriParameters();
+		pars.put("failed", failed);
+		pars.put("refused", refused);
 		
-		String payload = c.serialize(id);
-		c.put(path + Long.toString(id)  + "/ack?", payload );
+		c.put(path + Long.toString(id)  + "/ack?" + pars.getParameterString());
 	}
 
 }

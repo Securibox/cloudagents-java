@@ -35,7 +35,10 @@ public enum SynchronizationState
     REPORT_FAILED,
     
     /** The synchronization hasn't been acknowledged */
-    NOT_ACK
+    NOT_ACK,
+
+    /** The account is blocked */
+    BLOCKED,
     }
 
 
