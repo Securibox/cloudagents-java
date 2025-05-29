@@ -273,7 +273,7 @@ public class SSLConfiguration implements SecurityConfiguration {
 		try {
 			
 			if(Utils.nullOrEmpty(audience)) {
-				audience = "https://sca-multitenant.securibox.eu";
+				audience = "";
 			}
 
 			SSLConfiguration cfg = new SSLConfiguration();

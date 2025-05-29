@@ -40,7 +40,7 @@ public class BasicAuthTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		SecurityConfiguration systConfig = SSLConfiguration.Basic(null, "username", "password");
-		ApiClient.ConfigureClient("https://sca-multitenant.securibox.eu/api/v1", systConfig);
+		ApiClient.ConfigureClient("https://localhost:8080/api/v1", systConfig);
 	}
 	//@AfterClass
 	public static void ClearCreatedAccounts() throws Exception {
@@ -96,7 +96,7 @@ public class BasicAuthTest {
 
 	@Test
 	public void C2_createAccount() throws ClientException{
-		Account account = new Account(); //Create account for BforBank
+		Account account = new Account(); //Create account for FakeAgent
 		account.setAgentId(BasicAuthTest.agentId);
 		account.setCustomerUserId(BasicAuthTest.customerUserId);
 		account.setCustomerAccountId(BasicAuthTest.customerAccountId);
@@ -196,12 +196,9 @@ public class BasicAuthTest {
 		synchManager.acknowledgeSynchronizationDelivery(BasicAuthTest.customerAccountId, documentIds, new long[] {});
 		
 	}
-	
-	
+		
 	@Test
 	public void Z1_deleteAccount()  throws ClientException, ResponseException{
 		ApiClient.getAccountManager().deleteAccount(BasicAuthTest.customerAccountId);
 	}
-	
-
 }

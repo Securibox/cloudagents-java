@@ -46,7 +46,7 @@ public class ApiClient {
 	 */
 	public static void ConfigureClient(String baseUrl, SecurityConfiguration configuration) {
 		if(Utils.nullOrEmpty(baseUrl)) {
-			baseUrl = "https://sca-multitenant.securibox.eu/api/v1/";
+			baseUrl = "";
 		}
 		ApiClient.client = new HttpClient(baseUrl, configuration);
 	}

@@ -33,7 +33,7 @@ public class JwtAuthTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		SecurityConfiguration systConfig = SSLConfiguration.JWT(null, "C:\\Path\\To\\publicKey.pem", "C:\\Path\\To\\privateKey-pkcs8.pem", "Private_Key_Password", JwtAuthTest.customerUserId);
-		ApiClient.ConfigureClient("https://sca-multitenant.securibox.eu/api/v1/",systConfig);
+		ApiClient.ConfigureClient("https://localhost:8080/api/v1",systConfig);
 	}
 	@AfterClass
 	public static void ClearCreatedAccounts() throws Exception {
