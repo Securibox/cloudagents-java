@@ -25,6 +25,10 @@ jobs:
         env:
           GPG_PUBLIC_KEY: ${{ secrets.GPG_PUBLIC_KEY }}
           GPG_SECRET_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          
+      - name: DEBUG - List provate keys
+        run: |
+          gpg --list-secret-keys
 
       - name: Step 3 - Set up Maven Central Repository
         uses: actions/setup-java@v3
