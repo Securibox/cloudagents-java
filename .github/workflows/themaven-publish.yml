@@ -21,10 +21,10 @@ jobs:
           echo "Importing Public Key"
           echo "${{ secrets.GPG_PUBLIC_KEY }}" | gpg --import
           echo "Importing Private Key"
-          echo "${{ secrets.GPG_SECRET_KEY }}" | gpg --import --no-tty --batch --yes
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --import --no-tty --batch --yes
         env:
           GPG_PUBLIC_KEY: ${{ secrets.GPG_PUBLIC_KEY }}
-          GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
+          GPG_SECRET_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
 
       - name: Step 3 - Set up Maven Central Repository
         uses: actions/setup-java@v3
@@ -34,7 +34,7 @@ jobs:
           server-id: central
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
-          gpg-private-key: ${{ secrets.GPG_SECRET_KEY }}
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
       - name: Step 4 - Publish Package to Maven Central
