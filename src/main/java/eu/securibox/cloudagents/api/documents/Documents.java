@@ -54,10 +54,10 @@ public class Documents {
 	}
 
 	/**
-	 * Gets a specific document.
-	 * @param id The document identifier
-	 * @param includeContent specifies if the response should include the document content in base64 encoding.
-	 * @return A document object
+    * Gets a specific document.
+    * @param id The document identifier
+    * @param includeContent specifies if the response should include the document content in base64 encoding.
+    * @return A document object
     * @throws ClientException
     * 			A client exception
     * @throws ResponseException
@@ -76,12 +76,16 @@ public class Documents {
 	}
 
 	/**
-	 * Acknowledges the document delivery.
-	 * @param id The document identifier
+	* Acknowledges the document delivery.
+	* @param id The document identifier
+	* @param failed  True if delivery failed.
+	* @param refused True if delivery was explicitly refused.
     * @throws ClientException
     * 			A client exception
     * @throws ResponseException
     * 			A response exception
+    * @throws UnsupportedEncodingException
+	*    		An Unsupported Encoding Exception
 	 */
 	public void acknowledgeDocumentDelivery(long id, boolean failed, boolean refused) throws ClientException, ResponseException, UnsupportedEncodingException {
 		Client c = ApiClient.getClient();
