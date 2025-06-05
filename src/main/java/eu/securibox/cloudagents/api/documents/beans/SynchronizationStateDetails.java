@@ -80,19 +80,36 @@ public enum SynchronizationStateDetails
     
     /** There's a temporary error in the agent web site */
     TEMPORARY_SERVER_ERROR,
+
     /** A captcha needs to be solved for the agent to perform login */
     CAPTCHA_FOUND,
+
     /** The credential necessary for multi-factor authentication is wrong */
     WRONG_OPTIONAL_CREDENTIALS,
+
     /** The secret code for the multi-fact authentication is wrong */
     WRONG_MFA_CODE,
+
+    /** The secret code for the multi-fact authentication has expired */
     EXPIRED_MFA_CODE,
-    IDENTITY_PROVIDER_NOT_LINKED_TO_ACCOUNT,
+
+    /** The user has not validated his account yet. */
+    ID_PROVIDER_NOT_LINKED_TO_ACCOUNT,
+
+    /** The user has not validated his account yet. */
     PENDING_USER_VALIDATION,
+
+    /** The user has been logged out during the download process. */
     LOGGED_OUT_DURING_DOWNLOAD,
+
+    /** Error with the proxy server */
     PROXY_FAILURE,
-    BLOCKED_BY_WEBSITE_PROTECTION_SERVICE,
-    ADDITIONAL_AUTHENTICATION_REQUIRED_NOT_MFA
+
+    //** Blocked by the protection service */
+    BLOCKED_BY_PROTECTION_SERVICE,
+
+    /** The context of the account has expired. */
+    CONTEXT_EXPIRED,
     }
 
 

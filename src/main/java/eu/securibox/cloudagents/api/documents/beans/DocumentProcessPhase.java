@@ -29,7 +29,17 @@ public enum DocumentProcessPhase
     ACKNOWLEDGEMENTFAILED,
     
     /** The deliveryfailed. */
-    DELIVERYFAILED
+    DELIVERYFAILED,
+
+    /** The holding */
+    HOLDING,
+
+    /** The parsing */
+    PARSING,
+
+    /** The topack */
+    TOPACK
+    
     }
 
 

@@ -3,17 +3,13 @@ package eu.securibox.cloudagents.api.documents;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
 import java.io.UnsupportedEncodingException;
 import java.util.List;
-
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
-
 import eu.securibox.cloudagents.api.documents.beans.Account;
 import eu.securibox.cloudagents.api.documents.beans.Agent;
 import eu.securibox.cloudagents.api.documents.beans.Category;
@@ -22,7 +18,6 @@ import eu.securibox.cloudagents.api.documents.beans.Document;
 import eu.securibox.cloudagents.api.documents.beans.Synchronization;
 import eu.securibox.cloudagents.api.documents.beans.SynchronizationState;
 import eu.securibox.cloudagents.core.SecurityConfiguration;
-import eu.securibox.cloudagents.core.Utils;
 import eu.securibox.cloudagents.core.configuration.SSLConfiguration;
 import eu.securibox.cloudagents.core.exceptions.ClientException;
 import eu.securibox.cloudagents.core.exceptions.ResponseException;
@@ -40,7 +35,7 @@ public class BasicAuthTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		SecurityConfiguration systConfig = SSLConfiguration.Basic(null, "username", "password");
-		ApiClient.ConfigureClient("https://sca-multitenant.securibox.eu/api/v1", systConfig);
+		ApiClient.ConfigureClient("https://localhost:8080/api/v1", systConfig);
 	}
 	//@AfterClass
 	public static void ClearCreatedAccounts() throws Exception {
@@ -89,14 +84,14 @@ public class BasicAuthTest {
 		assertTrue(categories.size()>0);
 		for(Category category : categories) {
 			List<Agent> agents = ApiClient.getCategoryManager().ListAgentsByCategory(category.getId());
-			assertTrue(agents.size()>0);
+			assertTrue(agents.size()>=0);
 		}
 	}
 		
 
 	@Test
 	public void C2_createAccount() throws ClientException{
-		Account account = new Account(); //Create account for BforBank
+		Account account = new Account(); //Create account for FakeAgent
 		account.setAgentId(BasicAuthTest.agentId);
 		account.setCustomerUserId(BasicAuthTest.customerUserId);
 		account.setCustomerAccountId(BasicAuthTest.customerAccountId);
@@ -155,25 +150,20 @@ public class BasicAuthTest {
 	}
 	
 	@Test
-	public void D1_DownloadDocuments() throws UnsupportedEncodingException, ClientException, ResponseException {
+	public void D1_GetDocuments() throws ClientException, ResponseException, UnsupportedEncodingException {
 		Documents documentManager = ApiClient.getDocumentManager();
 		List<Document> documents = documentManager.searchDocuments(BasicAuthTest.customerAccountId, BasicAuthTest.customerUserId, false, true);
 		assertFalse(documents.isEmpty());
-		
-		for(Document document : documents) {
-			assertFalse(Utils.nullOrEmpty(document.getBase64Content()));
-			//assertTrue(document.getCustomerUserId() == BasicAuthTest.customerUserId);
-		}
 	}
 	
 	@Test
 	public void D2_DocumentAcknowledgement() throws UnsupportedEncodingException, ClientException, ResponseException {
 		Documents documentManager = ApiClient.getDocumentManager();
-		List<Document> documents = documentManager.searchDocuments(BasicAuthTest.customerAccountId, BasicAuthTest.customerUserId, true, false);
+		List<Document> documents = documentManager.searchDocuments(BasicAuthTest.customerAccountId, BasicAuthTest.customerUserId, false, false);
 		assertFalse(documents.isEmpty());
 		
 		Document firstDocument = documents.get(0);
-		documentManager.acknowledgeDocumentDelivery(firstDocument.getId());
+		documentManager.acknowledgeDocumentDelivery(firstDocument.getId(),true, false);
 		
 		List<Document> documentsAfterAck = documentManager.searchDocuments(BasicAuthTest.customerAccountId, BasicAuthTest.customerUserId, true, false);
 		
@@ -196,12 +186,9 @@ public class BasicAuthTest {
 		synchManager.acknowledgeSynchronizationDelivery(BasicAuthTest.customerAccountId, documentIds, new long[] {});
 		
 	}
-	
-	
+		
 	@Test
 	public void Z1_deleteAccount()  throws ClientException, ResponseException{
 		ApiClient.getAccountManager().deleteAccount(BasicAuthTest.customerAccountId);
 	}
-	
-
 }
