@@ -3,6 +3,9 @@
    */
 package eu.securibox.cloudagents.api.documents.beans;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Enum DocumentProcessPhase.
@@ -11,35 +14,54 @@ public enum DocumentProcessPhase
     {
     
     /** The toparse. */
-    TOPARSE,
+    TOPARSE (0),
     
     /** The todeliver. */
-    TODELIVER,
+    TODELIVER (1),
     
     /** The packaged. */
-    PACKAGED,
+    PACKAGED (2),
     
     /** The delivered. */
-    DELIVERED,
+    DELIVERED (3),
     
     /** The acknowledged. */
-    ACKNOWLEDGED,
+    ACKNOWLEDGED (4),
     
     /** The acknowledgementfailed. */
-    ACKNOWLEDGEMENTFAILED,
+    ACKNOWLEDGEMENTFAILED (5),
     
     /** The deliveryfailed. */
-    DELIVERYFAILED,
+    DELIVERYFAILED (6),
 
     /** The holding */
-    HOLDING,
+    HOLDING (7),
 
     /** The parsing */
-    PARSING,
+    PARSING (8),
 
     /** The topack */
-    TOPACK
-    
+    TOPACK (9);
+
+    private final int code;
+
+    DocumentProcessPhase(int code) {
+        this.code = code;
+    }   
+
+    @JsonValue
+    public int getCode() {
+        return code;
     }
+
+    @JsonCreator
+    public static DocumentProcessPhase fromCode(int code) {
+        for (DocumentProcessPhase phase : values()) {
+            if (phase.code == code)
+                return phase;
+        }
+        throw new IllegalArgumentException("Unknown document process phase code: " + code + ", please update the sdk.");
+    }
+  }
 
 
