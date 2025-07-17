@@ -164,11 +164,20 @@ public class BasicAuthTest {
 		
 		Document firstDocument = documents.get(0);
 		documentManager.acknowledgeDocumentDelivery(firstDocument.getId(),true, false);
-		
+		long[] documentIds = new long[documents.size()];
+		for(int i = 0; i < documents.size(); i++) 
+		{
+			if(documents.get(i).getId() == firstDocument.getId()) {
+				continue;
+			}
+			
+			documentIds[i] = documents.get(i).getId();
+			documentManager.acknowledgeDocumentDelivery(documentIds[i],false, false);
+		}
 		List<Document> documentsAfterAck = documentManager.searchDocuments(BasicAuthTest.customerAccountId, BasicAuthTest.customerUserId, true, false);
 		
 		for(Document document : documentsAfterAck) {
-			assertFalse(document.getId() == firstDocument.getId());
+			assertTrue(document.getId() == firstDocument.getId());
 		}
 	}
 	
@@ -180,6 +189,7 @@ public class BasicAuthTest {
 		long[] documentIds = new long[documents.size()];
 		for(int i = 0; i < documents.size(); i++) {
 			documentIds[i] = documents.get(i).getId();
+			documentManager.acknowledgeDocumentDelivery(documentIds[i],false, false);
 		}
 		
 		Synchronizations synchManager = ApiClient.getSynchronizationManager();
