@@ -19,17 +19,13 @@ public enum AccountMode
 		this.code = code;
 	}
 
-	@JsonValue
-	public int getCode() {
-		return code;
-	}
-
 	@JsonCreator
-	public static AccountMode fromCode(int code) {
+	public static AccountMode fromString(String name) {
 		for (AccountMode mode : values()) {
-			if (mode.code == code)
+			if (mode.name().equalsIgnoreCase(name)) {
 				return mode;
+			}
 		}
-		throw new IllegalArgumentException("Unknown account mode code: " + code + ", please update the sdk.");
+    throw new IllegalArgumentException("Unknown account mode name: " + name + ", please update the sdk.");
 	}
 }
