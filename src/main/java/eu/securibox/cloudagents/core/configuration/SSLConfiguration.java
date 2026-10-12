@@ -29,21 +29,22 @@ import javax.crypto.EncryptedPrivateKeyInfo;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
+import javax.net.ssl.SSLContext;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.http.Header;
-import org.apache.http.HttpHeaders;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.fluent.Executor;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.hc.client5.http.fluent.Executor;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.ssl.ClientTlsStrategyBuilder;
+import org.apache.hc.client5.http.ssl.TlsSocketStrategy;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.HttpHeaders;
+import org.apache.hc.core5.http.message.BasicHeader;
+import org.apache.hc.core5.http.ssl.TLS;
+import org.apache.hc.core5.ssl.SSLContextBuilder;
 
 import eu.securibox.cloudagents.core.SecurityConfiguration;
 import eu.securibox.cloudagents.core.TrustStore;
@@ -53,10 +54,9 @@ import eu.securibox.cloudagents.core.auth.jwt.JWTCreator;
 import eu.securibox.cloudagents.core.auth.jwt.algorithms.Algorithm;
 import eu.securibox.cloudagents.core.auth.jwt.exceptions.JWTCreationException;
 
-//TODO: Auto-generated Javadoc
 /**
-* The Class SSLConfiguration.
-*/
+ * The Class SSLConfiguration.
+ */
 public class SSLConfiguration implements SecurityConfiguration {
 
 	/** The executor. */
@@ -103,34 +103,20 @@ public class SSLConfiguration implements SecurityConfiguration {
 			throw new IllegalArgumentException("No password was provided for basic authentication.");
 
 		try {
-
 			SSLConfiguration cfg = new SSLConfiguration();
 
 			// Getting SSL context from the custom store (if needed)
 			SSLContextBuilder contextBuilder = SSLConfiguration.getSSLContextBuilder(store);
 
-			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(contextBuilder.build(),
-					new String[] { "TLSv1.2", "TLSv1.3" }, null, SSLConnectionSocketFactory.getDefaultHostnameVerifier());
+			// HttpClient 5: preemptive Basic auth is sent as a default header on every request.
+			// (In v5, Executor.authPreemptive only works with credentials registered on the
+			// Executor itself, so a client-level credentials provider is no longer enough.)
+			String credentials = username + ":" + password;
+			String encoded = Base64.getEncoder().encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
+			List<Header> headers = new ArrayList<Header>();
+			headers.add(new BasicHeader(HttpHeaders.AUTHORIZATION, "Basic " + encoded));
 
-			HttpClientBuilder clientBuilder = HttpClients.custom();
-			clientBuilder.setSSLSocketFactory(sslsf);
-
-			CredentialsProvider credsProvider = new BasicCredentialsProvider();
-			credsProvider.setCredentials(new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT),
-					new UsernamePasswordCredentials(username, password));
-			clientBuilder.setDefaultCredentialsProvider(credsProvider);
-
-			clientBuilder.setConnectionManagerShared(true); // This avoid the
-			// underlying
-			// HttpClient to be
-			// garbage collected
-			// (or connection
-			// pool to be
-			// cancelled);
-
-			CloseableHttpClient httpClient = clientBuilder.build(); // TLS
-
-			cfg.executor = Executor.newInstance(httpClient);
+			cfg.executor = Executor.newInstance(buildHttpClient(contextBuilder.build(), headers));
 			cfg.preemptiveAuth = true;
 			return cfg;
 
@@ -183,24 +169,9 @@ public class SSLConfiguration implements SecurityConfiguration {
 			contextBuilder.loadKeyMaterial(new File(keyStoreFilename), keyStorePassword.toCharArray(),
 					keyStorePrivateKeyPassword.toCharArray());
 
-			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(contextBuilder.build(),
-					new String[] { "TLSv1.2", "TLSv1.3" }, null, SSLConnectionSocketFactory.getDefaultHostnameVerifier());
-			HttpClientBuilder clientBuilder = HttpClients.custom();
-			clientBuilder.setSSLSocketFactory(sslsf);
-
-			clientBuilder.setConnectionManagerShared(true); // This avoid the
-			// underlying
-			// HttpClient to be
-			// garbage collected
-			// (or connection
-			// pool to be
-			// cancelled);
-
-			CloseableHttpClient httpClient = clientBuilder.build(); // TLS
-
-			cfg.executor = Executor.newInstance(httpClient);
-
+			cfg.executor = Executor.newInstance(buildHttpClient(contextBuilder.build(), null));
 			return cfg;
+
 		} catch (NoSuchAlgorithmException e) {
 			throw new SecurityConfigurationException(e);
 		} catch (KeyStoreException e) {
@@ -271,7 +242,6 @@ public class SSLConfiguration implements SecurityConfiguration {
 	public static SecurityConfiguration JWT(TrustStore store, String publicKeyFilePath, String privateKeyFilePath, String privateKeyPassword, String customerUserId, String audience) throws Exception {
 		
 		try {
-			
 			if(Utils.nullOrEmpty(audience)) {
 				audience = "";
 			}
@@ -281,19 +251,13 @@ public class SSLConfiguration implements SecurityConfiguration {
 			// Getting SSL context from the custom store (if needed)
 			SSLContextBuilder contextBuilder = SSLConfiguration.getSSLContextBuilder(store);
 
-			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(contextBuilder.build(),
-					new String[] { "TLSv1.2", "TLSv1.3" }, null, SSLConnectionSocketFactory.getDefaultHostnameVerifier());
-
-			HttpClientBuilder clientBuilder = HttpClients.custom();
-			
-			RSAPrivateKey privateKey = loadRSAPrivateKeyFromFile(privateKeyFilePath, privateKeyPassword);//Get the key instance
+			RSAPrivateKey privateKey = loadRSAPrivateKeyFromFile(privateKeyFilePath, privateKeyPassword);
 			RSAPublicKey publicKey = loadRSAPublicKeyFromFile(publicKeyFilePath);
-			
-	
+
 			Calendar calendar = Calendar.getInstance();
-			long t= calendar.getTimeInMillis();
+			long t = calendar.getTimeInMillis();
 			Date date = new Date(t);
-			Date expiresAt = new Date(t + (60 * 60* 1000));
+			Date expiresAt = new Date(t + (60 * 60 * 1000));
 			
 			Algorithm JwtAlgorithm = Algorithm.RSA256(publicKey, privateKey);
 			String token = JWTCreator.init()
@@ -304,17 +268,10 @@ public class SSLConfiguration implements SecurityConfiguration {
 			        .withClaim("uid", customerUserId)
 			        .sign(JwtAlgorithm);
 			
-			Header jwtHeader = new BasicHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token);
 			List<Header> headers = new ArrayList<Header>();
-			headers.add(jwtHeader);
-			
-			clientBuilder.setDefaultHeaders(headers);
-			clientBuilder.setSSLSocketFactory(sslsf);
-			clientBuilder.setConnectionManagerShared(true);
+			headers.add(new BasicHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token));
 
-			CloseableHttpClient httpClient = clientBuilder.build(); // TLS
-
-			cfg.executor = Executor.newInstance(httpClient);
+			cfg.executor = Executor.newInstance(buildHttpClient(contextBuilder.build(), headers));
 			cfg.preemptiveAuth = true;
 			return cfg;
 			
@@ -331,6 +288,37 @@ public class SSLConfiguration implements SecurityConfiguration {
 		} catch (KeyManagementException e) {
 			throw new SecurityConfigurationException(e);
 		}
+	}
+
+	/**
+	 * Builds the underlying HttpClient 5 instance, restricted to TLS 1.2 / 1.3,
+	 * with the default hostname verification.
+	 *
+	 * @param sslContext the SSL context (trust material and optional client certificate)
+	 * @param defaultHeaders headers sent with every request (may be null)
+	 * @return the HTTP client
+	 */
+	private static CloseableHttpClient buildHttpClient(SSLContext sslContext, List<Header> defaultHeaders) {
+
+		TlsSocketStrategy tlsStrategy = ClientTlsStrategyBuilder.create()
+				.setSslContext(sslContext)
+				.setTlsVersions(TLS.V_1_3, TLS.V_1_2)
+				.buildClassic();
+
+		PoolingHttpClientConnectionManager connectionManager = PoolingHttpClientConnectionManagerBuilder.create()
+				.setTlsSocketStrategy(tlsStrategy)
+				.build();
+
+		HttpClientBuilder clientBuilder = HttpClients.custom()
+				.setConnectionManager(connectionManager)
+				// Avoids the connection pool being shut down when the fluent Executor is released
+				.setConnectionManagerShared(true);
+
+		if (defaultHeaders != null && !defaultHeaders.isEmpty()) {
+			clientBuilder.setDefaultHeaders(defaultHeaders);
+		}
+
+		return clientBuilder.build();
 	}
 	
 	/**
@@ -351,7 +339,7 @@ public class SSLConfiguration implements SecurityConfiguration {
 	private static SSLContextBuilder getSSLContextBuilder(TrustStore store)
 			throws NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException {
 
-		SSLContextBuilder contextBuilder = new SSLContextBuilder();
+		SSLContextBuilder contextBuilder = SSLContextBuilder.create();
 
 		if (store != null) {
 			String fileName = store.getFilename();
@@ -372,9 +360,7 @@ public class SSLConfiguration implements SecurityConfiguration {
 	public boolean userPreemptiveAuth() {
 		return this.preemptiveAuth;
 	}
-	
 
-	
 	public static RSAPrivateKey loadRSAPrivateKeyFromFile(String filePath, String privateKeyPassword) throws Exception {
 	    String privateKeyPEM = FileUtils.readFileToString(new File(filePath), StandardCharsets.UTF_8);
 	    privateKeyPEM = privateKeyPEM

@@ -1,13 +1,11 @@
 package eu.securibox.cloudagents.core.http;
 
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.StatusLine;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 
 import eu.securibox.cloudagents.core.Response;
 
@@ -17,30 +15,27 @@ public class HttpResponse implements Response {
 	String responseMessage = null;
 	int statusCode;
 
-	public HttpResponse(org.apache.http.client.fluent.Response response) throws IOException {
+	public HttpResponse(org.apache.hc.client5.http.fluent.Response response) throws IOException {
 		if (response == null) {
 			throw new IOException("No Response object was returned by the client.");
-		}		
-		org.apache.http.HttpResponse resp = response.returnResponse();
-		StatusLine statusLine = resp.getStatusLine();
-		this.statusCode = statusLine.getStatusCode();
-		this.responseMessage = statusLine.getReasonPhrase();
-		this.body = HttpResponse.readEntity(resp.getEntity());
+		}
+		// HttpClient 5: handleResponse reads status and body in one pass
+		// and releases the connection automatically.
+		response.handleResponse(resp -> {
+			this.statusCode = resp.getCode();
+			this.responseMessage = resp.getReasonPhrase();
+			this.body = readEntity(resp.getEntity());
+			return null;
+		});
 	}
 
-	private static String readEntity(HttpEntity entity) throws IOException {
-		StringBuilder out = new StringBuilder();
-		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(entity.getContent()));
-			String line;
-			while ((line = reader.readLine()) != null) {
-				out.append(line);
-			}
-			reader.close();
-		} finally {
-			EntityUtils.consume(entity);
+	private static String readEntity(HttpEntity entity) throws IOException, org.apache.hc.core5.http.ParseException {
+		if (entity == null) {
+			// e.g. 204 No Content
+			return "";
 		}
-		return out.toString();
+		// Uses the charset from the Content-Type header, UTF-8 if none is given.
+		return EntityUtils.toString(entity, StandardCharsets.UTF_8);
 	}
 
 	public String getBody() {
