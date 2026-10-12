@@ -2,15 +2,15 @@ package eu.securibox.cloudagents.core.http;
 
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
 
-import org.apache.http.HttpHost;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.fluent.Executor;
-import org.apache.http.client.fluent.Request;
-import org.apache.http.entity.ContentType;
+import org.apache.hc.client5.http.fluent.Executor;
+import org.apache.hc.client5.http.fluent.Request;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.HttpHost;
 
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
@@ -87,18 +87,19 @@ public class HttpClient implements Client {
 		if (configuration.userPreemptiveAuth()) {
 			String hostString = this.baseUrl.substring(0,
 					this.baseUrl.indexOf("/", this.baseUrl.indexOf("://") + 3));
-			HttpHost host = HttpHost.create(hostString);
-			executor.authPreemptive(host);
+			try {
+				HttpHost host = HttpHost.create(hostString);
+				executor.authPreemptive(host);
+			} catch (URISyntaxException e) {
+				throw new IllegalArgumentException("Invalid base Url host: " + hostString, e);
+			}
 		}
 		
 		// Instancing the JSON mapper (jackson library)
 		JsonMapper.Builder builder = JsonMapper.builder();
 		builder.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
 		this.mapper =  builder.build();
-				
-		
 
-		//this.mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true); 
         // Avoid having to annotate the Person class
         // Requires Java 8, pass -parameters to javac
         // and jackson-module-parameter-names as a dependency
@@ -140,26 +141,27 @@ public class HttpClient implements Client {
 
 	private Response execute(HttpMethod method, String path, String payload) throws ResponseException, ClientException {
 
-		org.apache.http.client.fluent.Response resp = null;
+		String url = this.baseUrl + Utils.clearPath(path);
+		org.apache.hc.client5.http.fluent.Response resp = null;
 		try {
 			switch (method) {
 			case GET:
-				resp = this.executor.execute(Request.Get(this.baseUrl + Utils.clearPath(path)));
+				resp = this.executor.execute(Request.get(url));
 				break;
 			case POST:
-				Request request = Request.Post(this.baseUrl + Utils.clearPath(path));
+				Request request = Request.post(url);
 				if (payload != null)
 					request.bodyString(payload, ContentType.APPLICATION_JSON);
 				resp = this.executor.execute(request);
 				break;
 			case PUT:
-				Request req = Request.Put(this.baseUrl + Utils.clearPath(path));
+				Request req = Request.put(url);
 				if (payload != null)
 					req.bodyString(payload, ContentType.APPLICATION_JSON);
 				resp = this.executor.execute(req);
 				break;
 			case DELETE:
-				resp = this.executor.execute(Request.Delete(this.baseUrl + Utils.clearPath(path)));
+				resp = this.executor.execute(Request.delete(url));
 				break;
 			default:
 				throw new IllegalArgumentException("The HttpMethod " + method + " is not supported");
@@ -177,8 +179,6 @@ public class HttpClient implements Client {
 			}
 			return response;
 
-		} catch (ClientProtocolException e) {
-			throw new ClientException(e);
 		} catch (IOException e) {
 			throw new ClientException(e);
 		}

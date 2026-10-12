@@ -1,6 +1,6 @@
 package eu.securibox.cloudagents.core;
 
-import org.apache.http.client.fluent.Executor;
+import org.apache.hc.client5.http.fluent.Executor;
 
 //TODO: Auto-generated Javadoc
 /**
