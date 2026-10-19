@@ -30,6 +30,10 @@ jobs:
         run: |
           gpg --list-secret-keys
 
+      - name: Debug
+        run: |
+          echo ${{ secrets.GPG_PRIVATE_KEY }} | sed 's/ //g'
+
       - name: Step 3 - Set up Maven Central Repository
         uses: actions/setup-java@v3
         with:
